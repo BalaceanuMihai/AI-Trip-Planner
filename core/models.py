@@ -14,5 +14,7 @@ class Trip(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s trip to {self.destination}"
-
+    
+    class Meta:
+        ordering = ['-created_at']
 # Create your models here.
