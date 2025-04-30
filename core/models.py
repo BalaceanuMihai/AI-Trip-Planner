@@ -15,10 +15,12 @@ class Trip(models.Model):
     def __str__(self):
         return f"{self.user.username}'s trip to {self.destination}"
 
+    class Meta:
+        ordering = ['-created_at']
 
+        
 class UserPreference(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     activities = models.JSONField()
     budget = models.IntegerField()
     preferred_climate = models.CharField(max_length=50, null=True)
-# Create your models here.
