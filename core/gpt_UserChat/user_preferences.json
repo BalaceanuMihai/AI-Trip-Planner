@@ -23,5 +23,37 @@
         "Learning about indigenous cultures"
       ]
     }
+  },
+  {
+    "timestamp": "2025-05-02T15:15:54.402843",
+    "preferences": {
+      "destination": "Cinque Terre, Italy",
+      "climate": "Spring",
+      "budget": "No restrictions",
+      "season": "Spring",
+      "crowd_level": "Quiet",
+      "activity_type": "Mix of beach, city, and nature experiences"
+    }
+  },
+  {
+    "timestamp": "2025-05-02T15:19:52.885815",
+    "preferences": {
+      "destination": "Moab, Utah, USA",
+      "activity_type": "extreme sports",
+      "season": "next week",
+      "budget": "wild and fun as possible",
+      "crowd_preference": "no preference"
+    }
+  },
+  {
+    "timestamp": "2025-05-02T16:05:51.054680",
+    "preferences": {
+      "country": "Canada",
+      "climate": "Varied",
+      "season": "",
+      "budget": "1000-1500",
+      "crowd_level": "No preference",
+      "trip_type": "Extreme adventure"
+    }
   }
 ]

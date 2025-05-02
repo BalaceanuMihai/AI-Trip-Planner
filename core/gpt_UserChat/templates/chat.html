@@ -1,68 +1,125 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>AI Trip Planner</title>
+    <title>AI Trip Planner Chat</title>
     <meta charset="UTF-8">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            padding: 2rem;
-            max-width: 600px;
-            margin: auto;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 20px;
         }
 
-        input, button {
-            padding: 10px;
-            font-size: 16px;
-            margin-top: 10px;
+        h2 {
+            text-align: center;
+            color: #333;
         }
 
         #chat-box {
-            border: 1px solid #ccc;
-            padding: 15px;
-            margin-top: 20px;
-            min-height: 200px;
-            background-color: #f9f9f9;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+            margin-bottom: 20px;
         }
 
         .message {
-            margin-bottom: 10px;
-        }
-
-        .bot {
-            font-weight: bold;
-            color: #0077cc;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            max-width: 80%;
+            word-wrap: break-word;
         }
 
         .user {
-            color: #555;
+            background-color: #0077cc;
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .bot {
+            background-color: #e1ecf7;
+            color: #333;
+            margin-right: auto;
+            text-align: left;
+        }
+
+        input[type="text"], textarea {
+            padding: 12px;
+            width: calc(100% - 24px);
+            margin: 8px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #0077cc;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #005fa3;
         }
 
         .destination-button {
             margin: 5px 5px 0 0;
-            padding: 6px 10px;
-            background-color: #0077cc;
+            padding: 8px 12px;
+            background-color: #20b486;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
         .destination-button:hover {
-            background-color: #005fa3;
+            background-color: #178765;
+        }
+
+        .section {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        label {
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
     <h2>AI Trip Planner</h2>
 
-    <input type="text" id="input" placeholder="Tell me about your dream trip..." />
-    <br>
-    <button onclick="send()">Send</button>
-    <button onclick="endChat()">End Chat & Save Preferences</button>
-
     <div id="chat-box"></div>
     <div id="suggestions"></div>
+
+    <input type="text" id="input" placeholder="Ask or answer the AI..." />
+    <button onclick="send()">Send</button>
+
+    <div class="section">
+        <h3>Complete Your Travel Plan</h3>
+
+        <label for="travel_dates">Travel Dates or Period:</label>
+        <input type="text" id="travel_dates" placeholder="e.g. July 5 - July 20, or Next month">
+
+        <label for="activities">Preferred Activities:</label>
+        <textarea id="activities" placeholder="e.g. hiking, museums, beaches"></textarea>
+
+        <button onclick="endChat()">End Chat & Save Preferences</button>
+    </div>
 
     <script>
         function appendMessage(text, sender) {
@@ -91,7 +148,6 @@
             const data = await res.json();
             appendMessage(data.reply, "bot");
 
-            // Show destination buttons if available
             const suggestionsDiv = document.getElementById("suggestions");
             suggestionsDiv.innerHTML = "";
 
@@ -121,14 +177,21 @@
         }
 
         async function endChat() {
+            const travelDates = document.getElementById("travel_dates").value.trim();
+            const activities = document.getElementById("activities").value.trim();
+
             const res = await fetch("/chat/end/", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({})
+                body: JSON.stringify({
+                    travel_dates: travelDates,
+                    activities: activities
+                })
             });
+
             const data = await res.json();
             if (data.status === "saved") {
-                alert("Preferences saved:\n" + JSON.stringify(data.preferences, null, 2));
+                alert("Preferences and travel plan saved:\n" + JSON.stringify(data, null, 2));
             } else {
                 alert("Could not save preferences: " + data.message);
             }
