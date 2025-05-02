@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'core',
+    'core.gpt_UserChat',
 ]
 
 MIDDLEWARE = [

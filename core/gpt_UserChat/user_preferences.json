@@ -1,0 +1,59 @@
+[
+  {
+    "timestamp": "2025-04-30T22:52:36.759224",
+    "preferences": {
+      "destination": "Seychelles",
+      "climate": "Tropical",
+      "budget": "Luxury",
+      "season": "Year-round",
+      "crowd_level": "Moderate",
+      "activity_type": "Beach relaxation, luxury resort stay, water activities"
+    }
+  },
+  {
+    "timestamp": "2025-05-02T14:47:41.878859",
+    "preferences": {
+      "destination": "Peru",
+      "climate": "Varied (coastal, highland, jungle)",
+      "budget": "No specific budget",
+      "activity_type": [
+        "Exploring historical sites like Machu Picchu",
+        "Visiting vibrant markets",
+        "Indulging in Peruvian cuisine",
+        "Learning about indigenous cultures"
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-05-02T15:15:54.402843",
+    "preferences": {
+      "destination": "Cinque Terre, Italy",
+      "climate": "Spring",
+      "budget": "No restrictions",
+      "season": "Spring",
+      "crowd_level": "Quiet",
+      "activity_type": "Mix of beach, city, and nature experiences"
+    }
+  },
+  {
+    "timestamp": "2025-05-02T15:19:52.885815",
+    "preferences": {
+      "destination": "Moab, Utah, USA",
+      "activity_type": "extreme sports",
+      "season": "next week",
+      "budget": "wild and fun as possible",
+      "crowd_preference": "no preference"
+    }
+  },
+  {
+    "timestamp": "2025-05-02T16:05:51.054680",
+    "preferences": {
+      "country": "Canada",
+      "climate": "Varied",
+      "season": "",
+      "budget": "1000-1500",
+      "crowd_level": "No preference",
+      "trip_type": "Extreme adventure"
+    }
+  }
+]
