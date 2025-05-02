@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Trip Planner</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 2rem;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        #chat-box {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-top: 20px;
+            min-height: 200px;
+            background-color: #f9f9f9;
+        }
+
+        .message {
+            margin-bottom: 10px;
+        }
+
+        .bot {
+            font-weight: bold;
+            color: #0077cc;
+        }
+
+        .user {
+            color: #555;
+        }
+
+        .destination-button {
+            margin: 5px 5px 0 0;
+            padding: 6px 10px;
+            background-color: #0077cc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .destination-button:hover {
+            background-color: #005fa3;
+        }
+    </style>
+</head>
+<body>
+    <h2>AI Trip Planner</h2>
+
+    <input type="text" id="input" placeholder="Tell me about your dream trip..." />
+    <br>
+    <button onclick="send()">Send</button>
+    <button onclick="endChat()">End Chat & Save Preferences</button>
+
+    <div id="chat-box"></div>
+    <div id="suggestions"></div>
+
+    <script>
+        function appendMessage(text, sender) {
+            const chatBox = document.getElementById("chat-box");
+            const message = document.createElement("div");
+            message.className = "message " + sender;
+            message.innerText = text;
+            chatBox.appendChild(message);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        async function send() {
+            const input = document.getElementById("input");
+            const userMessage = input.value.trim();
+            if (!userMessage) return;
+
+            appendMessage(userMessage, "user");
+            input.value = "";
+
+            const res = await fetch("/chat/api/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: userMessage })
+            });
+
+            const data = await res.json();
+            appendMessage(data.reply, "bot");
+
+            // Show destination buttons if available
+            const suggestionsDiv = document.getElementById("suggestions");
+            suggestionsDiv.innerHTML = "";
+
+            if (data.suggested_destinations) {
+                const label = document.createElement("p");
+                label.innerHTML = "<strong>Select a destination:</strong>";
+                suggestionsDiv.appendChild(label);
+
+                data.suggested_destinations.forEach(dest => {
+                    const button = document.createElement("button");
+                    button.className = "destination-button";
+                    button.textContent = dest;
+                    button.onclick = () => selectDestination(dest);
+                    suggestionsDiv.appendChild(button);
+                });
+            }
+        }
+
+        async function selectDestination(dest) {
+            const res = await fetch("/chat/select/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ destination: dest })
+            });
+            const data = await res.json();
+            alert(data.message);
+        }
+
+        async function endChat() {
+            const res = await fetch("/chat/end/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({})
+            });
+            const data = await res.json();
+            if (data.status === "saved") {
+                alert("Preferences saved:\n" + JSON.stringify(data.preferences, null, 2));
+            } else {
+                alert("Could not save preferences: " + data.message);
+            }
+        }
+    </script>
+</body>
+</html>

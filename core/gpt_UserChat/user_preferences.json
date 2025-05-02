@@ -1,0 +1,27 @@
+[
+  {
+    "timestamp": "2025-04-30T22:52:36.759224",
+    "preferences": {
+      "destination": "Seychelles",
+      "climate": "Tropical",
+      "budget": "Luxury",
+      "season": "Year-round",
+      "crowd_level": "Moderate",
+      "activity_type": "Beach relaxation, luxury resort stay, water activities"
+    }
+  },
+  {
+    "timestamp": "2025-05-02T14:47:41.878859",
+    "preferences": {
+      "destination": "Peru",
+      "climate": "Varied (coastal, highland, jungle)",
+      "budget": "No specific budget",
+      "activity_type": [
+        "Exploring historical sites like Machu Picchu",
+        "Visiting vibrant markets",
+        "Indulging in Peruvian cuisine",
+        "Learning about indigenous cultures"
+      ]
+    }
+  }
+]
