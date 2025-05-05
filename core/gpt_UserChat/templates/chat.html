@@ -48,7 +48,7 @@
             text-align: left;
         }
 
-        input[type="text"], textarea {
+        input[type="text"] {
             padding: 12px;
             width: calc(100% - 24px);
             margin: 8px 0;
@@ -86,18 +86,6 @@
         .destination-button:hover {
             background-color: #178765;
         }
-
-        .section {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-        }
-
-        label {
-            font-weight: bold;
-        }
     </style>
 </head>
 <body>
@@ -109,17 +97,7 @@
     <input type="text" id="input" placeholder="Ask or answer the AI..." />
     <button onclick="send()">Send</button>
 
-    <div class="section">
-        <h3>Complete Your Travel Plan</h3>
-
-        <label for="travel_dates">Travel Dates or Period:</label>
-        <input type="text" id="travel_dates" placeholder="e.g. July 5 - July 20, or Next month">
-
-        <label for="activities">Preferred Activities:</label>
-        <textarea id="activities" placeholder="e.g. hiking, museums, beaches"></textarea>
-
-        <button onclick="endChat()">End Chat & Save Preferences</button>
-    </div>
+    <button onclick="endChat()">End Chat & Save Preferences</button>
 
     <script>
         function appendMessage(text, sender) {
@@ -163,6 +141,15 @@
                     button.onclick = () => selectDestination(dest);
                     suggestionsDiv.appendChild(button);
                 });
+
+                const showAllButton = document.createElement("button");
+                showAllButton.className = "destination-button";
+                showAllButton.style.backgroundColor = "#555";
+                showAllButton.textContent = "Show All Destinations";
+                showAllButton.onclick = () => {
+                    alert("Available Destinations:\\n\\n" + data.suggested_destinations.join("\\n"));
+                };
+                suggestionsDiv.appendChild(showAllButton);
             }
         }
 
@@ -177,16 +164,10 @@
         }
 
         async function endChat() {
-            const travelDates = document.getElementById("travel_dates").value.trim();
-            const activities = document.getElementById("activities").value.trim();
-
             const res = await fetch("/chat/end/", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    travel_dates: travelDates,
-                    activities: activities
-                })
+                body: JSON.stringify({})
             });
 
             const data = await res.json();
