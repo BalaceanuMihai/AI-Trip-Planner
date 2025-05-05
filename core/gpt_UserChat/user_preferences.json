@@ -55,5 +55,60 @@
       "crowd_level": "No preference",
       "trip_type": "Extreme adventure"
     }
+  },
+  {
+    "timestamp": "2025-05-02T17:02:39.048357",
+    "preferences": {
+      "country": "French Polynesia",
+      "climate": "Tropical",
+      "season": null,
+      "budget": "No limit",
+      "crowd_level": "Low",
+      "trip_type": "Romantic"
+    }
+  },
+  {
+    "timestamp": "2025-05-05T18:06:52.667734",
+    "preferences": {
+      "country": "Jamaica",
+      "climate": "Tropical",
+      "season": "Year-round",
+      "travel_window": "As soon as possible",
+      "trip_length": "3-4 days",
+      "activities": "Beach relaxation, snorkeling",
+      "budget": "$1500",
+      "crowd_level": "Low",
+      "trip_type": "Relaxing beach getaway"
+    }
+  },
+  {
+    "timestamp": "2025-05-05T18:16:07.415844",
+    "preferences": {
+      "country": "Czech Republic",
+      "departure_location": "Bucharest",
+      "climate": "Temperate",
+      "season": "Autumn",
+      "travel_window": "Autumn",
+      "trip_length": "1 week",
+      "activities": "Exploring historic sites, strolling through old town, boat ride on the river",
+      "budget": "1000",
+      "crowd_level": "Moderate",
+      "trip_type": "Bonding experience"
+    }
+  },
+  {
+    "timestamp": "2025-05-05T18:21:18.754082",
+    "preferences": {
+      "country": "Peru",
+      "departure_location": "Rome",
+      "climate": "Tropical",
+      "season": "Spring",
+      "travel_window": "21st April - 29th April",
+      "trip_length": "8 days",
+      "activities": "Exploring ancient ruins, learning about Incan history, marveling at impressive architecture",
+      "budget": "Unlimited (as Elon Musk)",
+      "crowd_level": "Very large group",
+      "trip_type": "Historical and mysterious exploration"
+    }
   }
 ]

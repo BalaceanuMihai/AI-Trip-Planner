@@ -13,7 +13,7 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 PREF_FILE = os.path.join(os.path.dirname(__file__), "user_preferences.json")
 TRAVEL_PLAN_FILE = os.path.join(os.path.dirname(__file__), "user_travel_plan.json")
-conversation_store = {}  # Temporary user memory
+conversation_store = {}
 
 def chat_ui(request):
     return render(request, "chat.html")
@@ -28,13 +28,12 @@ def chat_api(request):
         conversation_store[user_id] = [
             {"role": "system", "content": (
                 "You are a helpful AI travel assistant. "
-                "When the user gives vague trip preferences, do not suggest destinations right away. "
-                "Ask for information step-by-step, one question at a time, waiting for answers. "
-                "Ask about these in order: travel period (dates or season), budget/restrictions, trip type, crowd preference. "
-                "Accept vague answers like 'summer' or 'next week' as valid. "
-                "If the user says they have no restrictions or preferences, skip to the next question. "
-                "Only after all answers, suggest 3-5 destinations that match with a short description for each. "
-                "Once the user selects a destination, remember it for the final summary."
+                "Ask users if they have specific travel periods in mind, how long they wish to stay (trip length in days or nights), "
+                "and from where they will depart for the trip (departure_location). "
+                "Store vague periods like 'summer' as travel_window and trip duration as trip_length. "
+                "Collect departure_location, budget, trip type, crowd preference, and activities. "
+                "Once enough preferences are gathered, suggest 3-5 destinations with short descriptions. "
+                "When user chooses a destination, remember it for final summary."
             )}
         ]
 
@@ -73,24 +72,15 @@ def select_destination(request):
 
 @csrf_exempt
 def end_conversation(request):
-    data = json.loads(request.body)
     user_id = "demo_user"
-    travel_dates = data.get("travel_dates")
-    trip_length = data.get("trip_length")
-    activities = data.get("activities")
-
     conversation = conversation_store.get(user_id, [])
 
     conversation.append({
         "role": "system",
         "content": (
-            "Now summarize the user's confirmed travel preferences based on the full conversation. "
-            "Include the chosen destination if the user confirmed one. "
-            "Only summarize confirmed or clearly implied preferences. "
-            "If the user mentioned a season like spring, summer, autumn, or winter, store that under 'season'. "
-            "If they mentioned specific travel periods or vague date ranges (like 'next week', 'July 5-20'), ignore that for preferences but use for travel plan if given. "
-            "Climate should only describe weather preferences (like warm, tropical, cool, cold). "
-            "Format the output as JSON with fields: country, climate, season, budget, crowd_level, trip_type."
+            "Now summarize the user's confirmed travel preferences. "
+            "Include departure_location (where the user will leave from), travel_window, trip_length, activities, budget, crowd_level, trip_type, and country. "
+            "Format output as JSON with: country, departure_location, climate, season, travel_window, trip_length, activities, budget, crowd_level, trip_type."
         )
     })
 
@@ -102,22 +92,23 @@ def end_conversation(request):
     summary = response.choices[0].message.content
     try:
         prefs_json = extract_json(summary)
-        if prefs_json.get("country"):
-            fields_to_save = ["country", "climate", "season", "budget", "crowd_level", "trip_type"]
-            prefs_to_save = {k: prefs_json.get(k) for k in fields_to_save}
-            save_preferences(prefs_to_save)
 
-            # Save user travel plan (destination, travel dates, trip length, activities, budget)
+        if prefs_json.get("country"):
+            save_preferences(prefs_json)
+
             plan_to_save = {
                 "country": prefs_json.get("country"),
-                "travel_window": travel_dates,
-                "trip_length": trip_length,
-                "activities": activities,
-                "budget": prefs_json.get("budget")
+                "departure_location": prefs_json.get("departure_location"),
+                "travel_window": prefs_json.get("travel_window"),
+                "trip_length": prefs_json.get("trip_length"),
+                "activities": prefs_json.get("activities"),
+                "budget": prefs_json.get("budget"),
+                "crowd_level": prefs_json.get("crowd_level"),
+                "trip_type": prefs_json.get("trip_type")
             }
             save_travel_plan(plan_to_save)
 
-            return JsonResponse({"status": "saved", "preferences": prefs_to_save, "travel_plan": plan_to_save})
+            return JsonResponse({"status": "saved", "preferences": prefs_json, "travel_plan": plan_to_save})
         else:
             return JsonResponse({"status": "skipped", "message": "Destination not confirmed by user."})
     except:
@@ -126,7 +117,6 @@ def end_conversation(request):
 def extract_destinations(text):
     lines = text.strip().split('\n')
     destinations = []
-    current_destination = None
 
     for line in lines:
         match = re.match(r"\d+\.\s+(.+?)\s*-\s*(.+)", line)
@@ -143,33 +133,21 @@ def extract_json(text):
     return json.loads(text[start:end])
 
 def save_preferences(prefs):
-    entry = {
-        "timestamp": datetime.now().isoformat(),
-        "preferences": prefs
-    }
-
+    entry = {"timestamp": datetime.now().isoformat(), "preferences": prefs}
+    data = []
     if os.path.exists(PREF_FILE):
         with open(PREF_FILE, "r") as f:
             data = json.load(f)
-    else:
-        data = []
-
     data.append(entry)
     with open(PREF_FILE, "w") as f:
         json.dump(data, f, indent=2)
 
 def save_travel_plan(plan):
-    entry = {
-        "timestamp": datetime.now().isoformat(),
-        "plan": plan
-    }
-
+    entry = {"timestamp": datetime.now().isoformat(), "plan": plan}
+    data = []
     if os.path.exists(TRAVEL_PLAN_FILE):
         with open(TRAVEL_PLAN_FILE, "r") as f:
             data = json.load(f)
-    else:
-        data = []
-
     data.append(entry)
     with open(TRAVEL_PLAN_FILE, "w") as f:
         json.dump(data, f, indent=2)
