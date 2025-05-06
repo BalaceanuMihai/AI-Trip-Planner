@@ -29,7 +29,7 @@ def chat_api(request):
             {"role": "system", "content": (
                 "You are a helpful AI travel assistant. "
                 "Ask users if they have specific travel periods in mind, how long they wish to stay (trip length in days or nights), "
-                "and from where they will depart for the trip (departure_location). "
+                "and from where they will depart for the trip (departure_location), but separate questions for different topics. "
                 "Store vague periods like 'summer' as travel_window and trip duration as trip_length. "
                 "Collect departure_location, budget, trip type, crowd preference, and activities. "
                 "Once enough preferences are gathered, suggest 3-5 destinations with short descriptions. "
