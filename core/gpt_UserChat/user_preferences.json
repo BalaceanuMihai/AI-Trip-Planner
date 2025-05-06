@@ -110,5 +110,35 @@
       "crowd_level": "Very large group",
       "trip_type": "Historical and mysterious exploration"
     }
+  },
+  {
+    "timestamp": "2025-05-06T14:53:50.792263",
+    "preferences": {
+      "country": "Switzerland",
+      "departure_location": "Bucharest",
+      "climate": "Temperate",
+      "season": "Summer",
+      "travel_window": "2 weeks",
+      "trip_length": "1-2 weeks",
+      "activities": "Adventure park activities, bungee jumping, cliff diving",
+      "budget": "$1500",
+      "crowd_level": "Extreme",
+      "trip_type": "Boys trip"
+    }
+  },
+  {
+    "timestamp": "2025-05-06T15:03:07.747944",
+    "preferences": {
+      "country": "Switzerland",
+      "departure_location": "Bucharest",
+      "climate": "Alpine",
+      "season": "Summer",
+      "travel_window": "this summer",
+      "trip_length": "a week or so",
+      "activities": "cliff diving, paragliding, skydiving, canyoning",
+      "budget": "$1500",
+      "crowd_level": "lively",
+      "trip_type": "wild adventure"
+    }
   }
 ]
