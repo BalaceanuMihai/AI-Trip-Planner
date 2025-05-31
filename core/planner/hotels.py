@@ -1,3 +1,4 @@
+import json
 import os
 import requests
 from dotenv import load_dotenv
@@ -28,9 +29,7 @@ def get_location_id(city_name):
     if not locations:
         print("⚠️ Locație negăsită pentru:", city_name)
         return None
-
-    print("📍 Location result:", locations[0])  # Debug
-
+    
     return locations[0]["dest_id"]
 
 
@@ -66,10 +65,17 @@ def get_hotels(city, arrival_date, departure_date, budget="500"):
         return ["⚠️ Niciun hotel găsit."]
 
     # ✅ Filtrare doar cazările disponibile
-    available_hotels = [hotel for hotel in hotels if hotel.get("min_total_price")]
+    available_hotels = [
+        hotel for hotel in hotels
+        if hotel.get("soldout") == 0 and hotel.get("min_total_price") and hotel.get("block_ids")
+    ]
 
     if not available_hotels:
         return ["⚠️ Nu există cazări disponibile în perioada selectată."]
+    
+    # print("\n\n\n")
+    # print(json.dumps(hotels[0], indent=2))  # vezi structura exactă
+    # print("\n\n\n")
 
     # 📅 Preluare componente pentru linkul cu date
     checkin = datetime.strptime(arrival_date, "%Y-%m-%d")
@@ -95,8 +101,9 @@ def get_hotels(city, arrival_date, departure_date, budget="500"):
                 f"&checkout_monthday={checkout.day}"
             )
 
-            results.append(f"{name} — {price} EUR, {address}\n🔗 {booking_url}")
+            results.append(f"{name} — {price} {hotel.get("currencycode")}, {address}\n🔗 {booking_url}")
+            
         except Exception as e:
             print("⚠️ Eroare la extragerea hotelului:", e)
-
+    
     return results
