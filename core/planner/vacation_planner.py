@@ -17,7 +17,7 @@ def generate_vacation_plans(preferences_file):
 
     destination = plan_data["country"]
     budget = plan_data["budget"]
-    activities = plan_data.get("activities", [])
+    # activities = plan_data.get("activities", [])
     travel_window = plan_data.get("travel_window", "2025-07-10 to 2025-07-20")  # fallback dacă lipsesc datele
 
     # Extrage datele de plecare și întoarcere
