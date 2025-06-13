@@ -11,25 +11,26 @@ RAPIDAPI_HOST = "kiwi-com-cheap-flights.p.rapidapi.com"
 # Load airport data
 airports_df = pd.read_csv("core/planner/data/airports_cleaned.csv")
 
-def get_airports_from_city(city_name):
-    matches = airports_df[airports_df["City"].str.lower() == city_name.lower()]
-    return [(row["IATA"], row["Name"]) for _, row in matches.iterrows() if pd.notna(row["IATA"])]
+def get_airports_from_city_and_country(city_name, country_name):
+    matches = airports_df[airports_df["City"].str.lower() == city_name.lower() and airports_df["Country"].str.lower() == country_name.lower()]
+    return [(row["IATA"], row["Name"], row["Country"], row["City"]) for _, row in matches.iterrows() if pd.notna(row["IATA"])]
 
-def search_all_flight_combinations(origin_city, destination_city, date=None):
-    origin_airports = get_airports_from_city(origin_city)
-    destination_airports = get_airports_from_city(destination_city)
+def search_all_flight_combinations(origin_city, origin_country, destination_city, destination_country, date=None):
+    origin_airports = get_airports_from_city_and_country(origin_city, origin_country)
+    destination_airports = get_airports_from_city_and_country(destination_city, destination_country)
 
     if not origin_airports:
         print(f"❌ Niciun aeroport găsit pentru orașul de plecare: {origin_city}")
-        return
+        return [f"❌ Niciun aeroport găsit pentru {origin_city}"]
     if not destination_airports:
         print(f"❌ Niciun aeroport găsit pentru orașul de destinație: {destination_city}")
-        return
+        return [f"❌ Niciun aeroport găsit pentru {destination_city}"]
 
-    found_any = False
-    for origin_iata in origin_airports:
-        for dest_iata in destination_airports:
-            print(f"\n🔍 Caut zboruri din {origin_city} ({origin_iata}) către {destination_city} ({dest_iata})...")
+    results = []  
+
+    for origin_iata, origin_name, _ in origin_airports:
+        for dest_iata, dest_name, _ in destination_airports:
+            print(f"\n🔍 Caut zboruri din {origin_name}({origin_iata})  către {dest_name}({dest_iata})...")
 
             querystring = {
                 "source": origin_iata,
@@ -68,52 +69,49 @@ def search_all_flight_combinations(origin_city, destination_city, date=None):
             }
 
             url = f"https://{RAPIDAPI_HOST}/round-trip"
-            response = requests.get(url, headers=headers, params=querystring)
-
             try:
+                response = requests.get(url, headers=headers, params=querystring)
                 response.raise_for_status()
                 data = response.json()
                 itineraries = data.get("itineraries", [])
 
-                if itineraries:
-                    found_any = True
-                    for idx, itinerary in enumerate(itineraries, 1):
+                for idx, itinerary in enumerate(itineraries, 1):
+                    try:
+                        out_seg = itinerary["outbound"]["sectorSegments"][0]["segment"]
+                        in_seg = itinerary["inbound"]["sectorSegments"][0]["segment"]
 
-                        try:
-                            # Extragem segmentul dus (outbound)
-                            out_seg = itinerary["outbound"]["sectorSegments"][0]["segment"]
-                            in_seg = itinerary["inbound"]["sectorSegments"][0]["segment"]
+                        airline = out_seg["carrier"]["name"]
+                        departure = out_seg["source"]["localTime"]
+                        arrival = out_seg["destination"]["localTime"]
+                        return_dep = in_seg["source"]["localTime"]
+                        return_arr = in_seg["destination"]["localTime"]
 
-                            airline = out_seg["carrier"]["name"]
-                            departure = out_seg["source"]["localTime"]
-                            arrival = out_seg["destination"]["localTime"]
-                            return_dep = in_seg["source"]["localTime"]
-                            return_arr = in_seg["destination"]["localTime"]
+                        price = float(itinerary["price"]["amount"])
+                        currency = "USD"
+                        booking_url = itinerary["bookingOptions"]["edges"][0]["node"]["bookingUrl"]
+                        full_url = f"https://www.kiwi.com{booking_url}"
 
-                            price = float(itinerary["price"]["amount"])
-                            currency = "USD"  # sau itinerary["price"].get("currency", "USD")
+                        formatted = (
+                            f"✈️ {airline}\n"
+                            f"📤 Plecare: {departure} → Sosire: {arrival}\n"
+                            f"🔁 Întoarcere: {return_dep} → Sosire: {return_arr}\n"
+                            f"💵 Preț: {price:.2f} {currency}\n"
+                            f"🔗 [Rezervă]({full_url})"
+                        )
 
-                            booking_url = itinerary["bookingOptions"]["edges"][0]["node"]["bookingUrl"]
-                            full_url = f"https://www.kiwi.com{booking_url}"
+                        results.append(formatted)
 
-                            print(f"✅ Zbor #{idx}:")
-                            print(f"   ✈️ {airline}")
-                            print(f"   📤 Plecare: {departure} → Sosire: {arrival}")
-                            print(f"   🔁 Întoarcere: {return_dep} → Sosire: {return_arr}")
-                            print(f"   💵 Preț: {price:.2f} {currency}")
-                            print(f"   🔗 Rezervă: {full_url}\n")
-
-                        except Exception as e:
-                            print(f"⚠️ Eroare la parsarea itinerariului #{idx}: {e}")
-
-                else:
-                    print("❌ Niciun zbor găsit pentru această combinație.")
+                    except Exception as e:
+                        print(f"⚠ Eroare la parsarea itinerariului #{idx}: {e}")
 
             except Exception as e:
-                print(f"⚠️ Eroare la request: {e}")
+                print(f"⚠ Eroare la request: {e}")
 
-    if not found_any:
-        print("\n🚫 Nu au fost găsite zboruri pentru nicio combinație.")
+    if not results:
+        return ["🚫 Nu au fost găsite zboruri pentru această combinație."]
+    
+    return results
+
 
 # Exemplu rulare locală
 if __name__ == "__main__":
