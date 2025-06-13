@@ -12,8 +12,15 @@ RAPIDAPI_HOST = "kiwi-com-cheap-flights.p.rapidapi.com"
 airports_df = pd.read_csv("core/planner/data/airports_cleaned.csv")
 
 def get_airports_from_city_and_country(city_name, country_name):
-    matches = airports_df[airports_df["City"].str.lower() == city_name.lower() and airports_df["Country"].str.lower() == country_name.lower()]
-    return [(row["IATA"], row["Name"], row["Country"], row["City"]) for _, row in matches.iterrows() if pd.notna(row["IATA"])]
+    matches = airports_df[
+        (airports_df["City"].str.lower() == city_name.lower()) &
+        (airports_df["Country"].str.lower() == country_name.lower())
+    ]
+    return [
+        (row["IATA"], row["Name"], row["Country"], row["City"])
+        for _, row in matches.iterrows()
+        if pd.notna(row["IATA"])
+    ]
 
 def search_all_flight_combinations(origin_city, origin_country, destination_city, destination_country, date=None):
     origin_airports = get_airports_from_city_and_country(origin_city, origin_country)
@@ -28,9 +35,9 @@ def search_all_flight_combinations(origin_city, origin_country, destination_city
 
     results = []  
 
-    for origin_iata, origin_name, _ in origin_airports:
-        for dest_iata, dest_name, _ in destination_airports:
-            print(f"\n🔍 Caut zboruri din {origin_name}({origin_iata})  către {dest_name}({dest_iata})...")
+    for origin_iata, origin_name, origin_country, origin_city in origin_airports:
+        for dest_iata, dest_name, dest_country, dest_city in destination_airports:
+            print(f"\n🔍 Caut zboruri din {origin_name} ({origin_iata}) către {dest_name} ({dest_iata})...")
 
             querystring = {
                 "source": origin_iata,
@@ -92,7 +99,7 @@ def search_all_flight_combinations(origin_city, origin_country, destination_city
                         full_url = f"https://www.kiwi.com{booking_url}"
 
                         formatted = (
-                            f"✈️ {airline}\n"
+                            f"✈ {airline}\n"
                             f"📤 Plecare: {departure} → Sosire: {arrival}\n"
                             f"🔁 Întoarcere: {return_dep} → Sosire: {return_arr}\n"
                             f"💵 Preț: {price:.2f} {currency}\n"
@@ -114,5 +121,5 @@ def search_all_flight_combinations(origin_city, origin_country, destination_city
 
 
 # Exemplu rulare locală
-if __name__ == "__main__":
-    search_all_flight_combinations("Barcelona", "Rome", date="2025-08-05")
+if _name_ == "_main_":
+    search_all_flight_combinations("Barcelona", "Spain", "Rome", "Italy", date="2025-08-05")
