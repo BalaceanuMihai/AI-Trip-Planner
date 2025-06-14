@@ -22,7 +22,7 @@ def get_airports_from_city_and_country(city_name, country_name):
         if pd.notna(row["IATA"])
     ]
 
-def search_all_flight_combinations(origin_city, origin_country, destination_city, destination_country, date=None):
+def search_all_flight_combinations(origin_city, origin_country, destination_city, destination_country, departure_date=None, return_date=None):
     origin_airports = get_airports_from_city_and_country(origin_city, origin_country)
     destination_airports = get_airports_from_city_and_country(destination_city, destination_country)
 
@@ -51,24 +51,24 @@ def search_all_flight_combinations(origin_city, origin_country, destination_city
                 "holdbags": "0",
                 "cabinClass": "ECONOMY",
                 "sortBy": "QUALITY",
-                "sortOrder": "ASCENDING",
+                "sortOrder": "DESCENDING",
                 "applyMixedClasses": "true",
-                "allowReturnFromDifferentCity": "true",
-                "allowChangeInboundDestination": "true",
-                "allowChangeInboundSource": "true",
-                "allowDifferentStationConnection": "true",
+                "allowReturnFromDifferentCity": "false",
+                "allowChangeInboundDestination": "false",
+                "allowChangeInboundSource": "false",
+                "allowDifferentStationConnection": "false",
                 "enableSelfTransfer": "true",
-                "enableOvernightStopover": "true",
+                "enableOvernightStopover": "false",
                 "enableTrueHiddenCity": "true",
                 "enableThrowAwayTicketing": "true",
                 "outbound": "SUNDAY,MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY,SATURDAY",
                 "transportTypes": "FLIGHT",
                 "contentProviders": "KIWI",
-                "limit": "5"
+                "outboundDepartureDateStart": departure_date + "T00:00:00" if departure_date else "",
+                "outboundDepartureDateEnd": departure_date + "T23:59:59" if departure_date else "",
+                "inboundDepartureDateStart": return_date + "T00:00:00" if return_date else "",
+                "inboundDepartureDateEnd": return_date + "T23:59:59" if return_date else ""
             }
-
-            if date:
-                querystring["date"] = date
 
             headers = {
                 "x-rapidapi-key": RAPIDAPI_KEY,
@@ -86,6 +86,11 @@ def search_all_flight_combinations(origin_city, origin_country, destination_city
                     try:
                         out_seg = itinerary["outbound"]["sectorSegments"][0]["segment"]
                         in_seg = itinerary["inbound"]["sectorSegments"][0]["segment"]
+
+                        outbound_duration = itinerary["outbound"].get("duration", 0)
+                        inbound_duration = itinerary["inbound"].get("duration", 0)
+
+                        duration = outbound_duration + inbound_duration
 
                         airline = out_seg["carrier"]["name"]
                         departure = out_seg["source"]["localTime"]
@@ -106,7 +111,7 @@ def search_all_flight_combinations(origin_city, origin_country, destination_city
                             f"🔗 [Rezervă]({full_url})"
                         )
 
-                        results.append(formatted)
+                        results.append((duration, formatted))
 
                     except Exception as e:
                         print(f"⚠ Eroare la parsarea itinerariului #{idx}: {e}")
@@ -117,9 +122,8 @@ def search_all_flight_combinations(origin_city, origin_country, destination_city
     if not results:
         return ["🚫 Nu au fost găsite zboruri pentru această combinație."]
     
-    return results
+    results.sort(key=lambda x: x[0])
+    top_3 = [entry[1] for entry in results[:3]]
 
+    return top_3
 
-# Exemplu rulare locală
-if _name_ == "_main_":
-    search_all_flight_combinations("Barcelona", "Spain", "Rome", "Italy", date="2025-08-05")

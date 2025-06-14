@@ -34,7 +34,7 @@ def get_location_id(city_name):
 
 
 # ✅ Obține hoteluri reale folosind endpointul apidojo
-def get_hotels(city, arrival_date, departure_date, budget="500"):
+def get_hotels(city, arrival_date, departure_date):
     dest_id = get_location_id(city)
     if not dest_id:
         return ["⚠️ Locația nu a fost găsită."]
@@ -51,7 +51,7 @@ def get_hotels(city, arrival_date, departure_date, budget="500"):
         "search_type": "city",
         "search_id": "none",
         "price_filter_currencycode": "EUR",
-        "order_by": "price",
+        "order_by": "popularity",
         "languagecode": "en-us",
         "travel_purpose": "leisure"
     }

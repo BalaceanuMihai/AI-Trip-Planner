@@ -66,3 +66,4 @@ def get_activities(city_name):
         return ["⚠️ Nu am găsit atracții turistice."]
 
     return results[:5]
+
