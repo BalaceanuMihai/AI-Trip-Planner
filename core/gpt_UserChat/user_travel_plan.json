@@ -84,5 +84,188 @@
       "crowd_level": "lively",
       "trip_type": "wild adventure"
     }
+  },
+  {
+    "timestamp": "2025-06-14T15:41:27.765382",
+    "plan": {
+      "country": "Serbia",
+      "departure_location": "Bucharest, Romania",
+      "travel_window": "August 8th for a week",
+      "trip_length": "7 days",
+      "activities": [
+        "Hiking",
+        "Nature exploration"
+      ],
+      "budget": "$700",
+      "crowd_level": "Low",
+      "trip_type": "Nature-focused"
+    }
+  },
+  {
+    "timestamp": "2025-06-14T15:46:46.049472",
+    "plan": {
+      "country": "Latvia",
+      "city": "Riga",
+      "destination_country": "Netherlands",
+      "destination_city": "Amsterdam",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "departure_date": "2025-09-13",
+      "return_date": "2025-09-18",
+      "trip_length": "5 days",
+      "activities": [
+        "Shopping",
+        "Attractions"
+      ],
+      "budget": "Moderate",
+      "crowd_level": "Moderate",
+      "trip_type": "Architecture and culture exploration",
+      "selected_destination": "Amsterdam, Netherlands: Renowned for its diverse nightlife options, Amsterdam offers everything from techno clubs to cozy brown cafes. You can also explore the picturesque canals, museums, and bike: friendly streets."
+    }
+  },
+  {
+    "timestamp": "2025-06-15T00:09:55.574168",
+    "plan": {
+      "country": "Netherlands",
+      "city": "Amsterdam",
+      "destination_country": "Netherlands",
+      "destination_city": "Amsterdam",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "departure_date": "2025-07-01",
+      "return_date": "2025-07-10",
+      "trip_length": 10,
+      "activities": [
+        "Exploring picturesque canals",
+        "Visiting museums",
+        "Enjoying vibrant nightlife"
+      ],
+      "crowd_level": "Bustling city",
+      "trip_type": "Solo"
+    }
+  },
+  {
+    "timestamp": "2025-06-15T00:29:00.980984",
+    "plan": {
+      "country": "United Arab Emirates",
+      "city": "Dubai",
+      "destination_country": "United Arab Emirates",
+      "destination_city": "Dubai",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "departure_date": "2025-08-01",
+      "return_date": "2025-08-15",
+      "trip_length": "14 days",
+      "activities": [
+        "Fine dining",
+        "Sports watching",
+        "Architectural exploration"
+      ],
+      "crowd_level": "No specific preference",
+      "trip_type": "Luxurious vacation"
+    }
+  },
+  {
+    "timestamp": "2025-06-15T00:43:07.100893",
+    "plan": {
+      "country": "Spain",
+      "city": "Mallorca",
+      "destination_country": "Spain",
+      "destination_city": "Mallorca",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "departure_date": "2025-08-15",
+      "return_date": "2025-08-22",
+      "trip_length": "7 days",
+      "activities": [
+        "Beach relaxation",
+        "Water sports like paddleboarding and snorkeling"
+      ],
+      "crowd_level": "Moderate",
+      "trip_type": "Relaxation"
+    }
+  },
+  {
+    "timestamp": "2025-06-15T00:44:23.972742",
+    "plan": {
+      "country": "Spain",
+      "city": "Mallorca",
+      "destination_country": "Spain",
+      "destination_city": "Mallorca",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "departure_date": "2025-08-15",
+      "return_date": "2025-08-22",
+      "trip_length": "7 days",
+      "activities": [
+        "Beach relaxation",
+        "Water sports"
+      ],
+      "crowd_level": "Moderate",
+      "trip_type": "Relaxation"
+    }
+  },
+  {
+    "timestamp": "2025-06-15T00:46:59.450164",
+    "plan": {
+      "country": "Croatia",
+      "city": "Plitvice Lakes National Park",
+      "destination_country": "Croatia",
+      "destination_city": "Plitvice Lakes National Park",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "departure_date": "2025-09-15",
+      "return_date": "2025-09-22",
+      "trip_length": 7,
+      "activities": [
+        "Hiking",
+        "Sightseeing",
+        "Camping",
+        "Wildlife Watching"
+      ],
+      "crowd_level": "Moderate",
+      "trip_type": "Nature-Centric"
+    }
+  },
+  {
+    "timestamp": "2025-06-15T00:52:21.067951",
+    "plan": {
+      "country": "Switzerland",
+      "city": "Interlaken",
+      "destination_country": "Switzerland",
+      "destination_city": "Interlaken",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "departure_date": "2025-09-12",
+      "return_date": "2025-09-19",
+      "trip_length": "7 days",
+      "activities": [
+        "Hiking",
+        "Camping"
+      ],
+      "crowd_level": "Moderate",
+      "trip_type": "Nature-focused"
+    }
+  },
+  {
+    "timestamp": "2025-06-15T01:00:53.604558",
+    "plan": {
+      "country": "Austria",
+      "city": "Vienna",
+      "destination_country": "Austria",
+      "destination_city": "Vienna",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "departure_date": "2025-08-01",
+      "return_date": "2025-08-10",
+      "trip_length": 10,
+      "activities": [
+        "Exploring historic sites",
+        "Visiting elegant cafes",
+        "Immersing in musical heritage"
+      ],
+      "crowd_level": "Not specified",
+      "trip_type": "City exploration"
+    }
   }
 ]

@@ -140,5 +140,206 @@
       "crowd_level": "lively",
       "trip_type": "wild adventure"
     }
+  },
+  {
+    "timestamp": "2025-06-14T15:41:27.763390",
+    "preferences": {
+      "country": "Serbia",
+      "departure_location": "Bucharest, Romania",
+      "climate": "Mountainous",
+      "season": "Summer",
+      "travel_window": "August 8th for a week",
+      "trip_length": "7 days",
+      "activities": [
+        "Hiking",
+        "Nature exploration"
+      ],
+      "budget": "$700",
+      "crowd_level": "Low",
+      "trip_type": "Nature-focused"
+    }
+  },
+  {
+    "timestamp": "2025-06-14T15:46:46.046471",
+    "preferences": {
+      "destination_country": "Poland",
+      "destination_city": "Zakopane",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "country": "Poland",
+      "city": "Zakopane",
+      "climate": "Mountainous",
+      "season": "Summer",
+      "departure_date": "2025-08-08",
+      "return_date": "2025-08-15",
+      "trip_length": "7 days",
+      "activities": [
+        "Skiing",
+        "Snowboarding",
+        "Hiking"
+      ],
+      "budget": "Moderate",
+      "crowd_level": "Moderate",
+      "trip_type": "Mountain Adventure"
+    }
+  },
+  {
+    "timestamp": "2025-06-15T00:09:55.569160",
+    "preferences": {
+      "destination_country": "Netherlands",
+      "destination_city": "Amsterdam",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "country": "Netherlands",
+      "city": "Amsterdam",
+      "climate": "Temperate",
+      "season": "Summer",
+      "departure_date": "2025-07-01",
+      "return_date": "2025-07-10",
+      "trip_length": 10,
+      "activities": [
+        "Exploring picturesque canals",
+        "Visiting museums",
+        "Enjoying vibrant nightlife"
+      ],
+      "crowd_level": "Bustling city",
+      "trip_type": "Solo"
+    }
+  },
+  {
+    "timestamp": "2025-06-15T00:29:00.966159",
+    "preferences": {
+      "destination_country": "United Arab Emirates",
+      "destination_city": "Dubai",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "country": "United Arab Emirates",
+      "city": "Dubai",
+      "climate": "Desert",
+      "season": "Summer",
+      "departure_date": "2025-08-01",
+      "return_date": "2025-08-15",
+      "trip_length": "14 days",
+      "activities": [
+        "Fine dining",
+        "Sports watching",
+        "Architectural exploration"
+      ],
+      "crowd_level": "No specific preference",
+      "trip_type": "Luxurious vacation"
+    }
+  },
+  {
+    "timestamp": "2025-06-15T00:43:07.088888",
+    "preferences": {
+      "destination_country": "Spain",
+      "destination_city": "Mallorca",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "country": "Spain",
+      "city": "Mallorca",
+      "climate": "Mediterranean",
+      "season": "Summer",
+      "departure_date": "2025-08-15",
+      "return_date": "2025-08-22",
+      "trip_length": "7 days",
+      "activities": [
+        "Beach relaxation",
+        "Water sports like paddleboarding and snorkeling"
+      ],
+      "crowd_level": "Moderate",
+      "trip_type": "Relaxation"
+    }
+  },
+  {
+    "timestamp": "2025-06-15T00:44:23.957027",
+    "preferences": {
+      "destination_country": "Spain",
+      "destination_city": "Mallorca",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "country": "Spain",
+      "city": "Mallorca",
+      "climate": "Mediterranean",
+      "season": "Summer",
+      "departure_date": "2025-08-15",
+      "return_date": "2025-08-22",
+      "trip_length": "7 days",
+      "activities": [
+        "Beach relaxation",
+        "Water sports"
+      ],
+      "crowd_level": "Moderate",
+      "trip_type": "Relaxation"
+    }
+  },
+  {
+    "timestamp": "2025-06-15T00:46:59.432342",
+    "preferences": {
+      "destination_country": "Croatia",
+      "destination_city": "Plitvice Lakes National Park",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "country": "Croatia",
+      "city": "Plitvice Lakes National Park",
+      "climate": "Mild",
+      "season": "Early Autumn",
+      "departure_date": "2025-09-15",
+      "return_date": "2025-09-22",
+      "trip_length": 7,
+      "activities": [
+        "Hiking",
+        "Sightseeing",
+        "Camping",
+        "Wildlife Watching"
+      ],
+      "crowd_level": "Moderate",
+      "trip_type": "Nature-Centric"
+    }
+  },
+  {
+    "timestamp": "2025-06-15T00:52:21.054384",
+    "preferences": {
+      "destination_country": "Switzerland",
+      "destination_city": "Interlaken",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "country": "Switzerland",
+      "city": "Interlaken",
+      "climate": "Temperate",
+      "season": "Early Autumn",
+      "departure_date": "2025-09-12",
+      "return_date": "2025-09-19",
+      "trip_length": "7 days",
+      "activities": [
+        "Hiking",
+        "Camping"
+      ],
+      "crowd_level": "Moderate",
+      "trip_type": "Nature-focused"
+    }
+  },
+  {
+    "timestamp": "2025-06-15T01:00:53.585675",
+    "preferences": {
+      "destination_country": "Austria",
+      "destination_city": "Vienna",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "country": "Austria",
+      "city": "Vienna",
+      "climate": "Mild continental",
+      "season": "Summer",
+      "departure_date": "2025-08-01",
+      "return_date": "2025-08-10",
+      "trip_length": 10,
+      "activities": [
+        "Exploring historic sites",
+        "Visiting elegant cafes",
+        "Immersing in musical heritage"
+      ],
+      "crowd_level": "Not specified",
+      "trip_type": "City exploration"
+    }
   }
 ]

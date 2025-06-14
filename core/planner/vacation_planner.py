@@ -1,46 +1,62 @@
 import json
 import os
 from dotenv import load_dotenv
-from core.planner.flights import get_flights
-from core.planner.hotels import get_hotels
-from core.planner.activities import get_activities
+from flights import search_all_flight_combinations
+from hotels import get_hotels
+from activities import get_activities
 
 load_dotenv()
 
 def generate_vacation_plans(preferences_file):
-    # Load travel preferences and plan
+    # 1. Încarcă datele din fișierul JSON
     with open(preferences_file, "r") as f:
         data = json.load(f)
 
-    # Suport pentru formatul cu listă (istoric) sau direct obiect
+    # Suportă ambele formate: listă sau obiect direct
     plan_data = data[-1]["plan"] if isinstance(data, list) else data["plan"]
 
-    destination = plan_data["country"]
-    budget = plan_data["budget"]
-    # activities = plan_data.get("activities", [])
-    travel_window = plan_data.get("travel_window", "2025-07-10 to 2025-07-20")  # fallback dacă lipsesc datele
+    # 2. Extrage detalii esențiale
+    origin_city = plan_data.get("departure_city", "Bucharest")
+    origin_country = plan_data.get("departure_country", "Romania")
+    destination_city = plan_data.get("destination_city", "Rome")
+    destination_country = plan_data.get("destination_country", "Italy")
+    departure_date = plan_data.get("departure_date", "2025-07-15")
+    return_date = plan_data.get("return_date", "2025-07-20")
 
-    # Extrage datele de plecare și întoarcere
-    try:
-        departure_date, return_date = [d.strip() for d in travel_window.split("to")]
-    except ValueError:
-        departure_date, return_date = "2025-07-10", "2025-07-20"
+    # 3. Apelează cele 3 servicii
+    flights = search_all_flight_combinations(
+        origin_city, origin_country, destination_city, destination_country, departure_date, return_date
+    )
+    hotels = get_hotels(destination_city, departure_date, return_date)
+    activities = get_activities(destination_city)
 
-    origin = "BUH"  # Aeroport de plecare (București)
+    # 4. Formatează planul final în stil chatbot
+    plan_parts = []
 
-    # Fetch data from real APIs
-    flights = get_flights(origin, destination, departure_date, return_date)
-    hotels = get_hotels(destination, departure_date, return_date, budget)
-    activity_options = get_activities(destination)
+    # ✈ Zboruri
+    if flights and not flights[0].startswith("❌") and not flights[0].startswith("🚫"):
+        plan_parts.append(f"✈ Zboruri din {origin_city} spre {destination_city}:")
+        plan_parts += [f"- {f}" for f in flights[:3]]
+    else:
+        plan_parts.append("❌ Nu am găsit zboruri disponibile.")
 
-    # Format the full vacation plan
-    plan_text = f"✈️ Flights to {destination}:\n"
-    plan_text += "\n".join(f"- {flight}" for flight in flights) + "\n\n"
+    # 🏨 Hoteluri
+    if hotels and not hotels[0].startswith("⚠️"):
+        plan_parts.append(f"\n🏨 Cazări în {destination_city}:")
+        plan_parts += [f"- {h}" for h in hotels[:3]]
+    else:
+        plan_parts.append("⚠️ Nu am găsit hoteluri disponibile.")
 
-    plan_text += f"🏨 Hotel Options in {destination}:\n"
-    plan_text += "\n".join(f"- {hotel}" for hotel in hotels) + "\n\n"
+    # 🎯 Activități
+    if activities and not activities[0].startswith("⚠️"):
+        plan_parts.append(f"\n🎯 Activități populare în {destination_city}:")
+        plan_parts += [f"- {a}" for a in activities[:5]]
+    else:
+        plan_parts.append("⚠️ Nu am găsit activități disponibile.")
 
-    plan_text += f"🎯 Suggested Activities in {destination}:\n"
-    plan_text += "\n".join(f"- {act}" for act in activity_options) + "\n"
+    # 5. Concatenează totul într-un singur string
+    full_plan = "\n".join(plan_parts)
 
-    return [plan_text]
+    return [full_plan]
+
+
