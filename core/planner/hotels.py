@@ -101,7 +101,10 @@ def get_hotels(city, arrival_date, departure_date):
                 f"&checkout_monthday={checkout.day}"
             )
 
-            results.append(f"{name} — {price} {hotel.get("currencycode")}, {address}\n🔗 {booking_url}")
+            results.append(
+                f"{name} — {price} {hotel.get('currencycode')}, {address}<br>"
+                f'🔗 <a href="{booking_url}" target="_blank">Vezi pe Booking</a>'
+            )
             
         except Exception as e:
             print("⚠️ Eroare la extragerea hotelului:", e)

@@ -1,5 +1,3 @@
-# salut frate
-
 """
 Django settings for trip_planner_project project.
 

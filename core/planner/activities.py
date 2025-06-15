@@ -59,7 +59,7 @@ def get_activities(city_name):
         if name and "Things to Do" not in name:
             text = f"{name} — {description[:100]}..."
             if link:
-                text += f"\n🔗 {link}"
+                text += f'<br>🔗 <a href="{link}" target="_blank">Vezi pe TripAdvisor</a>'
             results.append(text)
 
     if not results:

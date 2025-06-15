@@ -2,6 +2,7 @@ import os
 import requests
 import pandas as pd
 from dotenv import load_dotenv
+from datetime import datetime
 
 # Load env vars
 load_dotenv()
@@ -93,10 +94,17 @@ def search_all_flight_combinations(origin_city, origin_country, destination_city
                         duration = outbound_duration + inbound_duration
 
                         airline = out_seg["carrier"]["name"]
-                        departure = out_seg["source"]["localTime"]
-                        arrival = out_seg["destination"]["localTime"]
-                        return_dep = in_seg["source"]["localTime"]
-                        return_arr = in_seg["destination"]["localTime"]
+                        departure_raw = out_seg["source"]["localTime"]
+                        arrival_raw = out_seg["destination"]["localTime"]
+                        return_dep_raw = in_seg["source"]["localTime"]
+                        return_arr_raw = in_seg["destination"]["localTime"]
+                        
+                        fmt = "%Y-%m-%dT%H:%M:%S"
+                        
+                        departure = datetime.strptime(departure_raw, fmt).strftime("%H:%M %d-%m-%Y")
+                        arrival = datetime.strptime(arrival_raw, fmt).strftime("%H:%M %d-%m-%Y")
+                        return_dep = datetime.strptime(return_dep_raw, fmt).strftime("%H:%M %d-%m-%Y")
+                        return_arr = datetime.strptime(return_arr_raw, fmt).strftime("%H:%M %d-%m-%Y")
 
                         price = float(itinerary["price"]["amount"])
                         currency = "USD"
@@ -108,7 +116,7 @@ def search_all_flight_combinations(origin_city, origin_country, destination_city
                             f"📤 Plecare: {departure} → Sosire: {arrival}\n"
                             f"🔁 Întoarcere: {return_dep} → Sosire: {return_arr}\n"
                             f"💵 Preț: {price:.2f} {currency}\n"
-                            f"🔗 [Rezervă]({full_url})"
+                            f'🔗 <a href="{full_url}" target="_blank">Rezervă aici</a>\n'
                         )
 
                         results.append((duration, formatted))
