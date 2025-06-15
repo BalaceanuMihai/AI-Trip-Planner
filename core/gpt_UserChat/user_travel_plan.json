@@ -267,5 +267,145 @@
       "crowd_level": "Not specified",
       "trip_type": "City exploration"
     }
+  },
+  {
+    "timestamp": "2025-06-15T15:56:25.484956",
+    "plan": {
+      "country": "United Arab Emirates",
+      "city": "Dubai",
+      "destination_country": "United Arab Emirates",
+      "destination_city": "Dubai",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "departure_date": "2025-07-01",
+      "return_date": "2025-07-10",
+      "trip_length": 10,
+      "activities": [
+        "Shopping",
+        "Water sports"
+      ],
+      "crowd_level": "Varied",
+      "trip_type": "Leisure"
+    }
+  },
+  {
+    "timestamp": "2025-06-15T16:02:56.223541",
+    "plan": {
+      "country": "United Arab Emirates",
+      "city": "Dubai",
+      "destination_country": "United Arab Emirates",
+      "destination_city": "Dubai",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "departure_date": "2025-07-01",
+      "return_date": "2025-07-10",
+      "trip_length": 10,
+      "activities": [
+        "Shopping",
+        "Water sports"
+      ],
+      "crowd_level": "Varied",
+      "trip_type": "Vacation"
+    }
+  },
+  {
+    "timestamp": "2025-06-15T16:02:59.745967",
+    "plan": {
+      "country": "United Arab Emirates",
+      "city": "Dubai",
+      "destination_country": "United Arab Emirates",
+      "destination_city": "Dubai",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "departure_date": "2025-07-01",
+      "return_date": "2025-07-10",
+      "trip_length": 10,
+      "activities": [
+        "Shopping",
+        "Water sports"
+      ],
+      "crowd_level": "Varied",
+      "trip_type": "Vacation"
+    }
+  },
+  {
+    "timestamp": "2025-06-15T16:05:00.268886",
+    "plan": {
+      "country": "Norway",
+      "city": "Oslo",
+      "destination_country": "Norway",
+      "destination_city": "Oslo",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "departure_date": "2025-08-12",
+      "return_date": "2025-08-19",
+      "trip_length": "7 days",
+      "activities": [
+        "Winter sports"
+      ],
+      "crowd_level": "Varied",
+      "trip_type": "Adventure"
+    }
+  },
+  {
+    "timestamp": "2025-06-15T16:33:16.963992",
+    "plan": {
+      "country": "France",
+      "city": "Paris",
+      "destination_country": "France",
+      "destination_city": "Paris",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "departure_date": "2025-09-15",
+      "return_date": "2025-09-29",
+      "trip_length": 14,
+      "activities": [
+        "Experience local culture"
+      ],
+      "crowd_level": "Bustling city",
+      "trip_type": "Sightseeing"
+    }
+  },
+  {
+    "timestamp": "2025-06-15T17:52:17.282462",
+    "plan": {
+      "country": "Portugal",
+      "city": "Lisbon",
+      "destination_country": "Portugal",
+      "destination_city": "Lisbon",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "departure_date": "2025-08-10",
+      "return_date": "2025-08-17",
+      "trip_length": "7 days",
+      "activities": [
+        "architectural exploration",
+        "experiencing the culture",
+        "beach relaxation"
+      ],
+      "crowd_level": "Moderate",
+      "trip_type": "Sightseeing and Relaxation"
+    }
+  },
+  {
+    "timestamp": "2025-06-15T18:06:01.145502",
+    "plan": {
+      "country": "Spain",
+      "city": "Barcelona",
+      "destination_country": "Spain",
+      "destination_city": "Barcelona",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "departure_date": "2025-08-15",
+      "return_date": "2025-08-22",
+      "trip_length": "7 days",
+      "activities": [
+        "exploring architecture",
+        "sampling local cuisine",
+        "soaking up the vibrant atmosphere"
+      ],
+      "crowd_level": "lively",
+      "trip_type": "cultural"
+    }
   }
 ]

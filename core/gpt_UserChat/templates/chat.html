@@ -174,13 +174,11 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({})
             });
-
-            const data = await res.json();
-            if (data.status === "saved") {
-                alert("Preferences and travel plan saved:\n" + JSON.stringify(data, null, 2));
-            } else {
-                alert("Could not save preferences: " + data.message);
-            }
+            
+            if (res.ok)
+                window.location.href = "/chat/vacation_plan/";
+            else
+                alert("A apărut o eroare la finalizarea conversației.");
         }
     </script>
 </body>

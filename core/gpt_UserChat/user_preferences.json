@@ -341,5 +341,159 @@
       "crowd_level": "Not specified",
       "trip_type": "City exploration"
     }
+  },
+  {
+    "timestamp": "2025-06-15T15:56:25.468314",
+    "preferences": {
+      "destination_country": "United Arab Emirates",
+      "destination_city": "Dubai",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "country": "United Arab Emirates",
+      "city": "Dubai",
+      "climate": "Desert",
+      "season": "Summer",
+      "departure_date": "2025-07-01",
+      "return_date": "2025-07-10",
+      "trip_length": 10,
+      "activities": [
+        "Shopping",
+        "Water sports"
+      ],
+      "crowd_level": "Varied",
+      "trip_type": "Leisure"
+    }
+  },
+  {
+    "timestamp": "2025-06-15T16:02:56.203211",
+    "preferences": {
+      "destination_country": "United Arab Emirates",
+      "destination_city": "Dubai",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "country": "United Arab Emirates",
+      "city": "Dubai",
+      "climate": "Desert climate",
+      "season": "Summer",
+      "departure_date": "2025-07-01",
+      "return_date": "2025-07-10",
+      "trip_length": 10,
+      "activities": [
+        "Shopping",
+        "Water sports"
+      ],
+      "crowd_level": "Varied",
+      "trip_type": "Vacation"
+    }
+  },
+  {
+    "timestamp": "2025-06-15T16:02:59.731925",
+    "preferences": {
+      "destination_country": "United Arab Emirates",
+      "destination_city": "Dubai",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "country": "United Arab Emirates",
+      "city": "Dubai",
+      "climate": "Desert",
+      "season": "Summer",
+      "departure_date": "2025-07-01",
+      "return_date": "2025-07-10",
+      "trip_length": 10,
+      "activities": [
+        "Shopping",
+        "Water sports"
+      ],
+      "crowd_level": "Varied",
+      "trip_type": "Vacation"
+    }
+  },
+  {
+    "timestamp": "2025-06-15T16:05:00.246070",
+    "preferences": {
+      "destination_country": "Norway",
+      "destination_city": "Oslo",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "country": "Norway",
+      "city": "Oslo",
+      "climate": "Temperate",
+      "season": "Summer",
+      "departure_date": "2025-08-12",
+      "return_date": "2025-08-19",
+      "trip_length": "7 days",
+      "activities": [
+        "Winter sports"
+      ],
+      "crowd_level": "Varied",
+      "trip_type": "Adventure"
+    }
+  },
+  {
+    "timestamp": "2025-06-15T16:33:16.943953",
+    "preferences": {
+      "destination_country": "Japan",
+      "destination_city": "Tokyo",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "country": "Japan",
+      "city": "Tokyo",
+      "climate": "Temperate",
+      "season": "Fall",
+      "departure_date": "2025-09-15",
+      "return_date": "2025-09-29",
+      "trip_length": 14,
+      "activities": [
+        "Experience local culture"
+      ],
+      "crowd_level": "Bustling city",
+      "trip_type": "Sightseeing"
+    }
+  },
+  {
+    "timestamp": "2025-06-15T17:52:17.269560",
+    "preferences": {
+      "destination_country": "Portugal",
+      "destination_city": "Lisbon",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "country": "Portugal",
+      "city": "Lisbon",
+      "climate": "Mediterranean",
+      "season": "Summer",
+      "departure_date": "2025-08-10",
+      "return_date": "2025-08-17",
+      "trip_length": "7 days",
+      "activities": [
+        "architectural exploration",
+        "experiencing the culture",
+        "beach relaxation"
+      ],
+      "crowd_level": "Moderate",
+      "trip_type": "Sightseeing and Relaxation"
+    }
+  },
+  {
+    "timestamp": "2025-06-15T18:06:01.127183",
+    "preferences": {
+      "destination_country": "Spain",
+      "destination_city": "Barcelona",
+      "departure_city": "Bucharest",
+      "departure_country": "Romania",
+      "country": "Spain",
+      "city": "Barcelona",
+      "climate": "Mediterranean",
+      "season": "Summer",
+      "departure_date": "2025-08-15",
+      "return_date": "2025-08-22",
+      "trip_length": "7 days",
+      "activities": [
+        "exploring architecture",
+        "sampling local cuisine",
+        "soaking up the vibrant atmosphere"
+      ],
+      "crowd_level": "lively",
+      "trip_type": "cultural"
+    }
   }
 ]

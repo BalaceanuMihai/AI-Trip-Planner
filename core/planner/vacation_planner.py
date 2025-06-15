@@ -1,15 +1,17 @@
 import json
 import os
 from dotenv import load_dotenv
-from flights import search_all_flight_combinations
-from hotels import get_hotels
-from activities import get_activities
+from core.planner.flights import search_all_flight_combinations
+from core.planner.hotels import get_hotels
+from core.planner.activities import get_activities
+from django.conf import settings
 
 load_dotenv()
 
-def generate_vacation_plans(preferences_file):
+def generate_vacation_plans():
     # 1. Încarcă datele din fișierul JSON
-    with open(preferences_file, "r") as f:
+    file = os.path.join(settings.BASE_DIR, "core", "gpt_UserChat", "user_travel_plan.json")
+    with open(file, "r") as f:
         data = json.load(f)
 
     # Suportă ambele formate: listă sau obiect direct

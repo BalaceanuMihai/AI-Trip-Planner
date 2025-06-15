@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from openai import OpenAI
 from dotenv import load_dotenv
+from core.planner.vacation_planner import generate_vacation_plans
 import re
 
 load_dotenv()
@@ -28,6 +29,7 @@ def chat_api(request):
         conversation_store[user_id] = [
             {"role": "system", "content": (
                 "You are a helpful AI travel assistant. "
+                "Keep the conversation casual, without imposing strict formats. "
                 "Ask different questions for each topic that will follow. Don't ask multiple questions at once. "
                 "Ask users if they have specific travel periods in mind or how long they wish to stay (trip length in days or nights), "
                 "and from where they will depart for the trip. Ask for the departure city and based on that find what the country of departure is (store as departure_city and departure_country). "
@@ -198,3 +200,7 @@ def save_selected_destination(destination_text):
                 f.seek(0)
                 json.dump(data, f, indent=2)
                 f.truncate()
+                
+def vacation_plan(request):
+    plan = generate_vacation_plans()
+    return render(request, "vacation_plan.html", {"plan": plan})
