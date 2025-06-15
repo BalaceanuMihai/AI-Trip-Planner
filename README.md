@@ -23,6 +23,10 @@ Trip  planner that uses AI to find specific trips based on user preferences
 
 - Ca utilizator, vreau ca linkurile din rezultate sa fie interactive, astfel incat sa pot face direct rezervarile.
 
+## Diagrama UML
+
+Este atasata in repository ul proiectului (Diagrama UML.png)
+
 ## Git Source Control
 
 - 'main' - Ramura principala, cod stabil
