@@ -175,3 +175,7 @@ cython_debug/
 
 # For API keys and secrets
 .env
+
+# Generated user data
+core/gpt_UserChat/user_preferences.json
+core/gpt_UserChat/user_travel_plan.json
