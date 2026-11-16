@@ -8,9 +8,12 @@ from django.conf import settings
 
 load_dotenv()
 
+
 def generate_vacation_plans():
     # 1. Încarcă datele din fișierul JSON
-    file = os.path.join(settings.BASE_DIR, "core", "gpt_UserChat", "user_travel_plan.json")
+    file = os.path.join(
+        settings.BASE_DIR, "core", "gpt_UserChat", "user_travel_plan.json"
+    )
     with open(file, "r") as f:
         data = json.load(f)
 
@@ -27,10 +30,17 @@ def generate_vacation_plans():
 
     # 3. Apelează cele 3 servicii
     flights = search_all_flight_combinations(
-        origin_city, origin_country, destination_city, destination_country, departure_date, return_date
+        origin_city,
+        origin_country,
+        destination_city,
+        destination_country,
+        departure_date,
+        return_date,
     )
+
     hotels = get_hotels(destination_city, departure_date, return_date)
-    activities = get_activities(destination_city)
+
+    activities = get_activities(destination_city, departure_date, return_date)
 
     # 4. Formatează planul final în stil chatbot
     plan_parts = []
@@ -60,5 +70,3 @@ def generate_vacation_plans():
     full_plan = "\n".join(plan_parts)
 
     return [full_plan]
-
-

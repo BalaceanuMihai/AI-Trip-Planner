@@ -1,94 +1,94 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
+  <head>
     <title>AI Trip Planner Chat</title>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            background-color: #f0f4f8;
-            margin: 0;
-            padding: 20px;
-        }
+      body {
+        font-family: "Segoe UI", Tahoma, sans-serif;
+        background-color: #f0f4f8;
+        margin: 0;
+        padding: 20px;
+      }
 
-        h2 {
-            text-align: center;
-            color: #333;
-        }
+      h2 {
+        text-align: center;
+        color: #333;
+      }
 
-        #chat-box {
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            max-height: 500px;
-            overflow-y: auto;
-            margin-bottom: 20px;
-        }
+      #chat-box {
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        max-height: 500px;
+        overflow-y: auto;
+        margin-bottom: 20px;
+      }
 
-        .message {
-            padding: 10px 15px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            max-width: 80%;
-            word-wrap: break-word;
-        }
+      .message {
+        padding: 10px 15px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        max-width: 80%;
+        word-wrap: break-word;
+      }
 
-        .user {
-            background-color: #0077cc;
-            color: white;
-            margin-left: auto;
-            text-align: right;
-        }
+      .user {
+        background-color: #0077cc;
+        color: white;
+        margin-left: auto;
+        text-align: right;
+      }
 
-        .bot {
-            background-color: #e1ecf7;
-            color: #333;
-            margin-right: auto;
-            text-align: left;
-        }
+      .bot {
+        background-color: #e1ecf7;
+        color: #333;
+        margin-right: auto;
+        text-align: left;
+      }
 
-        input[type="text"] {
-            padding: 12px;
-            width: calc(100% - 24px);
-            margin: 8px 0;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-        }
+      input[type="text"] {
+        padding: 12px;
+        width: calc(100% - 24px);
+        margin: 8px 0;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+      }
 
-        button {
-            padding: 12px 20px;
-            background-color: #0077cc;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-top: 10px;
-            width: 100%;
-            transition: background-color 0.3s ease;
-        }
+      button {
+        padding: 12px 20px;
+        background-color: #0077cc;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-top: 10px;
+        width: 100%;
+        transition: background-color 0.3s ease;
+      }
 
-        button:hover {
-            background-color: #005fa3;
-        }
+      button:hover {
+        background-color: #005fa3;
+      }
 
-        .destination-button {
-            margin: 5px 5px 0 0;
-            padding: 8px 12px;
-            background-color: #20b486;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+      .destination-button {
+        margin: 5px 5px 0 0;
+        padding: 8px 12px;
+        background-color: #20b486;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
 
-        .destination-button:hover {
-            background-color: #178765;
-        }
+      .destination-button:hover {
+        background-color: #178765;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h2>AI Trip Planner</h2>
 
     <div id="chat-box"></div>
@@ -99,87 +99,100 @@
     <button onclick="endChat()">End Chat & Get Vacation Plan</button>
 
     <script>
-        function appendMessage(text, sender) {
-            const chatBox = document.getElementById("chat-box");
-            const message = document.createElement("div");
-            message.className = "message " + sender;
-            message.innerText = text;
-            chatBox.appendChild(message);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
+      function appendMessage(text, sender) {
+        const chatBox = document.getElementById("chat-box");
+        const message = document.createElement("div");
+        message.className = "message " + sender;
+        message.innerText = text;
+        chatBox.appendChild(message);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
 
-        async function send() {
-            const input = document.getElementById("input");
-            const userMessage = input.value.trim();
-            if (!userMessage) return;
+      async function send() {
+        const input = document.getElementById("input");
+        const userMessage = input.value.trim();
+        if (!userMessage) return;
 
-            appendMessage(userMessage, "user");
-            input.value = "";
+        appendMessage(userMessage, "user");
+        input.value = "";
 
-            const res = await fetch("/chat/api/", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: userMessage })
-            });
-
-            const data = await res.json();
-            appendMessage(data.reply, "bot");
-
-            const suggestionsDiv = document.getElementById("suggestions");
-            suggestionsDiv.innerHTML = "";
-
-            {% comment %} if (data.suggested_destinations) {
-                const label = document.createElement("p");
-                label.innerHTML = "<strong>Select a destination:</strong>";
-                suggestionsDiv.appendChild(label);
-
-                data.suggested_destinations.forEach(dest => {
-                    const button = document.createElement("button");
-                    button.className = "destination-button";
-                    button.textContent = dest;
-                    button.onclick = () => selectDestination(dest);
-                    suggestionsDiv.appendChild(button);
-                });
-
-                const showAllButton = document.createElement("button");
-                showAllButton.className = "destination-button";
-                showAllButton.style.backgroundColor = "#555";
-                showAllButton.textContent = "Show All Destinations";
-                showAllButton.onclick = () => {
-                    alert("Available Destinations:\\n\\n" + data.suggested_destinations.join("\\n"));
-                };
-                suggestionsDiv.appendChild(showAllButton);
-            } {% endcomment %}
-        }
-
-        document.getElementById("input").addEventListener("keyup", function (event) {
-            if (event.key === "Enter") {
-                send();
-            }
+        const res = await fetch("/chat/api/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: userMessage }),
         });
 
-        async function selectDestination(dest) {
-            const res = await fetch("/chat/select/", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ destination: dest })
-            });
-            const data = await res.json();
-            alert(data.message);
-        }
+        const data = await res.json();
+        appendMessage(data.reply, "bot");
 
-        async function endChat() {
-            const res = await fetch("/chat/end/", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({})
-            });
-            
-            if (res.ok)
-                window.location.href = "/chat/vacation_plan/";
-            else
-                alert("A apărut o eroare la finalizarea conversației.");
+        const suggestionsDiv = document.getElementById("suggestions");
+        suggestionsDiv.innerHTML = "";
+
+        /* if (data.suggested_destinations) {
+                      const label = document.createElement("p");
+                      label.innerHTML = "<strong>Select a destination:</strong>";
+                      suggestionsDiv.appendChild(label);
+
+                      data.suggested_destinations.forEach(dest => {
+                          const button = document.createElement("button");
+                          button.className = "destination-button";
+                          button.textContent = dest;
+                          button.onclick = () => selectDestination(dest);
+                          suggestionsDiv.appendChild(button);
+                      });
+
+                      const showAllButton = document.createElement("button");
+                      showAllButton.className = "destination-button";
+                      showAllButton.style.backgroundColor = "#555";
+                      showAllButton.textContent = "Show All Destinations";
+                      showAllButton.onclick = () => {
+                          alert("Available Destinations:\\n\\n" + data.suggested_destinations.join("\\n"));
+                      };
+                      suggestionsDiv.appendChild(showAllButton);
+                    } */
+      }
+
+      document
+        .getElementById("input")
+        .addEventListener("keyup", function (event) {
+          if (event.key === "Enter") {
+            send();
+          }
+        });
+
+      async function selectDestination(dest) {
+        const res = await fetch("/chat/select/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ destination: dest }),
+        });
+        const data = await res.json();
+        alert(data.message);
+      }
+
+      async function endChat() {
+        try {
+          const res = await fetch("/chat/end/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({}),
+          });
+
+          const data = await res.json();
+
+          if (res.ok && data.status === "saved") {
+            window.location.href = "/chat/vacation_plan/";
+          } else {
+            alert(data.message || "Preferințele nu au fost salvate.");
+          }
+        } catch (error) {
+          console.error("Error ending chat:", error);
+
+          alert("A apărut o eroare la finalizarea conversației.");
         }
+      }
     </script>
-</body>
+  </body>
 </html>

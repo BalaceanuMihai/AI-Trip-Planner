@@ -1,83 +1,225 @@
-# AI-Trip-Planner
-Trip  planner that uses AI to find specific trips based on user preferences
+# 🌍 AI Trip Planner
 
-## User Stories
+**AI Trip Planner** is an AI-powered web application that helps users plan personalized vacations through a conversational interface.
 
-- Ca utilizator, vreau sa pot introduce datele calatoriei într-un chat, astfel încât AI-ul sa-mi inteleaga preferintele.
+Built with **Python and Django**, the application uses OpenAI to understand travel preferences and integrates external travel services to recommend flights, hotels, and tourist attractions.
 
-- Ca utilizator, vreau aă pot alege o destinatie dintr-o lista generata de AI, astfel incat sa personalizez vacanaa.
+The project was originally developed as a university assignment and later updated with modern API integrations.
 
-- Ca utilizator, vreau ca planul de calatorie sa includa zboruri dus-intors, astfel incat sa imi organizez transportul complet.
+## ✨ Features
 
-- Ca utilizator, vreau să văd 3 cele mai bune opțiuni de hoteluri, astfel incat sa aleg cea mai potrivita cazare.
+### 💬 AI-Powered Travel Assistant
 
-- Ca utilizator, vreau sa primesc sugestii de activitati, astfel încât să imi planific timpul liber.
+Users interact with an OpenAI-powered chatbot to describe their ideal vacation.
 
-- Ca utilizator, vreau ca datele mele sa fie salvate in fisiere JSON, astfel incat aplicatia sa imi poata genera rapid un plan.
+The chatbot collects information such as:
 
-- Ca utilizator, vreau sa pot accesa planul meu de vacanta dintr-un link, astfel incat sa il consult usor.
+- Departure location and preferred destination
+- Travel dates and duration
+- Budget and personal interests
+- Travel preferences
 
-- Ca utilizator, vreau ca orele zborurilor ss fie afisate clar, astfel incat sa stiu exact cand plec si cand ajung.
+After the conversation, the application extracts structured travel information from the user's messages.
 
-- Ca utilizator, vreau sa pot incheia conversatia si sa primesc sumarul preferintelor mele, astfel incat sa fiu sigur ca totul a fost salvat corect.
+![AI Chatbot Conversation](./screenshots/chat-conversation.png)
 
-- Ca utilizator, vreau ca linkurile din rezultate sa fie interactive, astfel incat sa pot face direct rezervarile.
+### 🧳 Personalized Vacation Plan
 
-## Diagrama UML
+Once the conversation is complete, the application generates a vacation plan by combining information from three travel services:
 
-Este atasata in repository ul proiectului (Diagrama UML.png)
+- **✈️ Flights — Kiwi.com:** Up to 3 round-trip flight options, including prices, airlines, schedules, and booking links.
+- **🏨 Hotels — Booking:** Up to 3 accommodation recommendations for the selected destination and dates.
+- **🏛️ Attractions — Tripadvisor:** Up to 5 tourist attractions with categories, ratings, and links.
 
-## Git Source Control
+All recommendations are displayed together on a dedicated results page.
 
-- 'main' - Ramura principala, cod stabil
-- 'feature/trip-model' - Structura de baza a proiectului
-- 'feature/telegramBotConfiguration' - Am incercat sa utilizam un template de tip Telegram pentru chatbot, dar ulterior am optat pentru o interfata facuta manual.
-- 'feature/AI-User-Interface' - Am dezvoltat interfata manual de tip chatbot care interactioneaza cu utilizatorul pentru a colecta detalii despre vacanta (ex: destinatie, date, preferinte de activitati).
-                              - Am aplicat prompt engineering pentru a ghida conversatia si a genera intrebari relevante.
-                              - Raspunsurile oferite de utilizator sunt extrase si salvate automat intr-un fisier JSON, care este ulterior folosit pentru a face cereri catre API-urile de zboruri, cazari si activitati.
-- 'feature/FlightsAPI' - In core/planner am creat in flights.py functia care face un request prin API catre KIWi.com si ne returneaza o lista de zboruri catre destinatia aleasa anterior.
-- 'feature/hotelAPIpartial' - Am inceput crearea fisierului hotels.py
-- 'feature/HotelAPI' - In core/planner am creat in hotels.py functia care face un request prin API catre Booking.com si ne returneaza o lista de cazari in destinatia aleasa anterior.
-- 'feature/ActivitiesAPI' - In core/planner am creat in activities.py functia care face un request prin API catre TripAdvisor.com si ne returneaza o lista de posibile activitati in destinatia aleasa anterior.
-- 'feature/build-vacation-plan' - In core/planner in fisierul vacation_planner.py am centralizat zborurile, cazarile si activitatile obtinute.
-- 'feature/results-template' - Am creat pagina de afisare a planurilor de vacanta, intr-un format user-friendly.
+![Generated Vacation Plan](./screenshots/vacation-plan.png)
 
+## 🛠️ Tech Stack
 
-## Rezolvare bug cu Pull Request
+| Component       | Technology                                |
+| --------------- | ----------------------------------------- |
+| Backend         | Python 3.11, Django 5.2                   |
+| Frontend        | HTML, CSS, JavaScript                     |
+| AI Chatbot      | OpenAI API                                |
+| Flight Search   | Kiwi.com MCP                              |
+| Hotels          | Booking API (RapidAPI)                    |
+| Attractions     | Tripadvisor Travel Advisor API (RapidAPI) |
+| Data Storage    | JSON, SQLite                              |
+| Other Libraries | Requests, Pandas, python-dotenv, MCP SDK  |
 
-Am identificat o eroare în fișierul flights.py, unde datele de plecare și întoarcere nu erau preluate corect, ceea ce ducea la afișarea unor zboruri cu ore și zile aleatorii.
-Pentru a remedia problema, am creat branch-ul feature/build-vacation-plan în care:
-- am corectat parametrii transmiși în request-ul către API-ul kiwi-cheap-flights;
-- am verificat că zborurile returnate corespund exact perioadei selectate de utilizator.
+## ⚙️ How It Works
 
-Rezolvarea a fost integrată în main printr-un pull request dedicat.
+The application follows a modular architecture that separates the chatbot, travel-planning logic, and external API integrations.
 
-## Design Patterns
+```text
+User
+  |
+  v
+Django Chat Interface
+  |
+  v
+OpenAI Chatbot
+  |
+  v
+Travel Preferences Extraction
+  |
+  v
+JSON Data Storage
+  |
+  v
+Vacation Planner
+  |
+  +----> Kiwi.com MCP --------> Flights
+  |
+  +----> Booking API ---------> Hotels
+  |
+  +----> Tripadvisor API -----> Attractions
+  |
+  v
+Generated Vacation Plan
+```
 
-- Aplicat Separation of Concerns: planner ≠ UI ≠ data
-- Folosit un pattern simplu de tip Service Layer pentru generate_vacation_plans() → agregare zboruri, hoteluri și activități într-o singură functie.
-- Chatul rulează într-un controller Django, iar datele sunt procesate în backend independent.
+### Implementation Details
 
-## Prompt Engineering & Toolori AI
+- **`core/gpt_UserChat/views.py`** — Handles chatbot requests, OpenAI communication, and preference extraction.
+- **`core/planner/vacation_planner.py`** — Coordinates the travel services and generates the vacation plan.
+- **`core/planner/flights.py`** — Uses the official Kiwi.com MCP server to search for round-trip flights.
+- **`core/planner/hotels.py`** — Retrieves accommodation recommendations through Booking API.
+- **`core/planner/activities.py`** — Retrieves tourist attractions through Tripadvisor Travel Advisor API.
 
-Pe parcursul dezvoltării proiectului am utilizat intensiv tooluri AI precum ChatGPT și GitHub Copilot în două moduri:
+The chatbot extracts travel preferences into JSON, which is subsequently used by the vacation planner to retrieve personalized recommendations.
 
-1. În procesul de dezvoltare:
-- pentru generarea și optimizarea codului HTML/CSS al interfeței chatbotului;
-- pentru scrierea funcțiilor backend (salvare date JSON, apeluri API pentru zboruri, hoteluri și activități);
-- pentru debugging și explicarea erorilor;
+## 🚀 Getting Started
 
-2. În aplicația finală:
-- am implementat prompt engineering direct în chatbotul aplicației, care pune întrebări relevante despre preferințele de vacanță (ex: „Care este perioada dorită?”, „Ce tip de activități preferi?”);
-- AI-ul folosește aceste răspunsuri pentru a genera automat o listă personalizată de planuri de vacanță;
-- planul ales de utilizator este salvat și folosit pentru a interoga API-urile externe.
+### Prerequisites
 
-Astfel, AI-ul a fost integrat atât ca asistent de dezvoltare, cât și ca componentă centrală în experiența utilizatorului.
+- Python 3.11
+- Git
+- OpenAI API key
+- RapidAPI account with access to Booking and Travel Advisor APIs
 
+### 1. Clone the Repository
 
+```bash
+git clone <REPOSITORY_URL>
+cd AI-Trip-Planner
+```
 
+Replace `<REPOSITORY_URL>` with the GitHub repository URL.
 
+### 2. Create a Virtual Environment
 
+**Windows (PowerShell):**
 
+```powershell
+py -3.11 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
 
+**macOS / Linux:**
 
+```bash
+python3.11 -m venv .venv
+source .venv/bin/activate
+```
+
+### 3. Install Dependencies
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+> The project was tested on Windows with Python 3.11.9. Platform-specific dependencies may need adjustments on macOS or Linux.
+
+### 4. Configure Environment Variables
+
+Create a `.env` file in the project root, next to `manage.py`:
+
+```dotenv
+OPENAI_API_KEY=your_openai_api_key
+
+RAPIDAPI_KEY=your_rapidapi_key
+RAPIDAPI_HOST_BOOKING=apidojo-booking-v1.p.rapidapi.com
+RAPIDAPI_HOST_TRIPADVISOR=travel-advisor.p.rapidapi.com
+```
+
+**API setup:**
+
+- [OpenAI Platform](https://platform.openai.com/api-keys) — Create an API key and configure billing if required.
+- [Booking API](https://rapidapi.com/apidojo/api/booking) — Enable access through RapidAPI.
+- [Travel Advisor API](https://rapidapi.com/apidojo/api/travel-advisor) — Enable access through RapidAPI.
+- [Kiwi.com MCP](https://mcp.kiwi.com) — Used directly through the MCP SDK, without an additional RapidAPI key.
+
+The OpenAI model must be available to your API account. RapidAPI services may have subscription requirements or usage limits.
+
+**Never commit your `.env` file or API keys to GitHub.**
+
+### 5. Run the Application
+
+Apply database migrations:
+
+```bash
+python manage.py migrate
+```
+
+Start the Django development server:
+
+```bash
+python manage.py runserver
+```
+
+Open the chatbot in your browser:
+
+**http://127.0.0.1:8000/chat/**
+
+## 🧪 Example Usage
+
+1. Open the chatbot interface.
+2. Describe your travel preferences.
+3. Answer any follow-up questions and confirm your destination.
+4. Click **End Chat & Get Vacation Plan**.
+5. Explore the generated flight, hotel, and attraction recommendations.
+
+**Example prompt:**
+
+> I want to plan a 5-night trip from Bucharest, Romania, to Rome, Italy, from February 15 to February 20, 2027. I'm interested in history, museums, architecture, and Italian food.
+
+The application processes the conversation and displays the results at:
+
+`http://127.0.0.1:8000/chat/vacation_plan/`
+
+Use future travel dates when testing the application.
+
+## 📌 Limitations & Future Improvements
+
+This project is an educational prototype designed for local development and demonstration.
+
+Current limitations:
+
+- No user authentication or individual accounts.
+- Travel preferences are stored locally in JSON files.
+- Flight searches currently use one adult passenger.
+- Recommendations depend on third-party APIs and their availability.
+- Bookings and payments are completed on external websites.
+
+Potential improvements include user authentication, database-backed travel plans, saved itineraries, budget filtering, and production deployment.
+
+## 📚 Project Background
+
+AI Trip Planner was developed as a university project to explore the integration of **conversational AI and external travel APIs**.
+
+The project demonstrates backend development with Django, AI integration using OpenAI, API communication, structured data processing, and modular application design.
+
+The original implementation was subsequently updated to use newer Booking and Tripadvisor endpoints and the official Kiwi.com MCP integration.
+
+Additional resources:
+
+- [UML Architecture Diagram](./Diagrama%20UML.png)
+- [Original Project Demo](./demo-final.mkv)
+
+## ⚠️ Disclaimer
+
+AI Trip Planner is an educational application. Flight prices, accommodation availability, and attraction information may change.
+
+The application does not perform reservations or process payments. Users should verify all details with the relevant providers before booking.

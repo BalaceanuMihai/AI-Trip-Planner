@@ -7,20 +7,17 @@ from datetime import datetime
 load_dotenv()
 
 RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY")
-RAPIDAPI_HOST = os.getenv("RAPIDAPI_HOST_BOOKING")  # trebuie să fie apidojo-booking-v1.p.rapidapi.com
+RAPIDAPI_HOST = os.getenv(
+    "RAPIDAPI_HOST_BOOKING"
+)  # trebuie să fie apidojo-booking-v1.p.rapidapi.com
 
-headers = {
-    "X-RapidAPI-Key": RAPIDAPI_KEY,
-    "X-RapidAPI-Host": RAPIDAPI_HOST
-}
+headers = {"X-RapidAPI-Key": RAPIDAPI_KEY, "X-RapidAPI-Host": RAPIDAPI_HOST}
+
 
 # ✅ Obține dest_id pe baza numelui orașului
 def get_location_id(city_name):
     url = "https://apidojo-booking-v1.p.rapidapi.com/locations/auto-complete"
-    params = {
-        "text": city_name,
-        "languagecode": "en-us"
-    }
+    params = {"text": city_name, "languagecode": "en-us"}
 
     response = requests.get(url, headers=headers, params=params)
     response.raise_for_status()
@@ -29,7 +26,7 @@ def get_location_id(city_name):
     if not locations:
         print("⚠️ Locație negăsită pentru:", city_name)
         return None
-    
+
     return locations[0]["dest_id"]
 
 
@@ -39,7 +36,7 @@ def get_hotels(city, arrival_date, departure_date):
     if not dest_id:
         return ["⚠️ Locația nu a fost găsită."]
 
-    url = "https://apidojo-booking-v1.p.rapidapi.com/properties/list"
+    url = "https://apidojo-booking-v1.p.rapidapi.com/properties/v2/list"
     params = {
         "offset": "0",
         "arrival_date": arrival_date,
@@ -53,7 +50,7 @@ def get_hotels(city, arrival_date, departure_date):
         "price_filter_currencycode": "EUR",
         "order_by": "popularity",
         "languagecode": "en-us",
-        "travel_purpose": "leisure"
+        "travel_purpose": "leisure",
     }
 
     response = requests.get(url, headers=headers, params=params)
@@ -66,13 +63,16 @@ def get_hotels(city, arrival_date, departure_date):
 
     # ✅ Filtrare doar cazările disponibile
     available_hotels = [
-        hotel for hotel in hotels
-        if hotel.get("soldout") == 0 and hotel.get("min_total_price") and hotel.get("block_ids")
+        hotel
+        for hotel in hotels
+        if hotel.get("soldout") == 0
+        and hotel.get("min_total_price")
+        and hotel.get("block_ids")
     ]
 
     if not available_hotels:
         return ["⚠️ Nu există cazări disponibile în perioada selectată."]
-    
+
     # print("\n\n\n")
     # print(json.dumps(hotels[0], indent=2))  # vezi structura exactă
     # print("\n\n\n")
@@ -105,8 +105,8 @@ def get_hotels(city, arrival_date, departure_date):
                 f"{name} — {price} {hotel.get('currencycode')}, {address}<br>"
                 f'🔗 <a href="{booking_url}" target="_blank">Vezi pe Booking</a>'
             )
-            
+
         except Exception as e:
             print("⚠️ Eroare la extragerea hotelului:", e)
-    
+
     return results

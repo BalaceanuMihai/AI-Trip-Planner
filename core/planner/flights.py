@@ -1,137 +1,212 @@
-import os
-import requests
-import pandas as pd
-from dotenv import load_dotenv
+"""Kiwi flight search integration via the official Kiwi.com MCP server.
+
+This module replaces the retired third-party RapidAPI Kiwi integration.
+It retains the synchronous search_all_flight_combinations() interface used
+by core/planner/vacation_planner.py and returns up to three HTML-ready strings.
+"""
+
+import asyncio
+import json
+import logging
 from datetime import datetime
+from html import escape
+from urllib.parse import urlparse
 
-# Load env vars
-load_dotenv()
-RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY")
-RAPIDAPI_HOST = "kiwi-com-cheap-flights.p.rapidapi.com"
+from mcp import ClientSession
+from mcp.client.streamable_http import streamable_http_client
 
-# Load airport data
-airports_df = pd.read_csv("core/planner/data/airports_cleaned.csv")
+KIWI_MCP_URL = "https://mcp.kiwi.com"
+logger = logging.getLogger(__name__)
 
-def get_airports_from_city_and_country(city_name, country_name):
-    matches = airports_df[
-        (airports_df["City"].str.lower() == city_name.lower()) &
-        (airports_df["Country"].str.lower() == country_name.lower())
+
+def _kiwi_date(iso_date):
+    """Convert YYYY-MM-DD (Django plan format) to DD/MM/YYYY (Kiwi MCP)."""
+    return datetime.strptime(iso_date, "%Y-%m-%d").strftime("%d/%m/%Y")
+
+
+def _display_datetime(value):
+    if not value:
+        return "necunoscută"
+
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00")).strftime(
+            "%H:%M %d-%m-%Y"
+        )
+    except (TypeError, ValueError):
+        return escape(str(value))
+
+
+def _airline_names(leg):
+    names = [
+        segment.get("carrierName") or segment.get("carrier")
+        for segment in (leg.get("segments") or [])
+        if isinstance(segment, dict)
     ]
-    return [
-        (row["IATA"], row["Name"], row["Country"], row["City"])
-        for _, row in matches.iterrows()
-        if pd.notna(row["IATA"])
+
+    return (
+        ", ".join(dict.fromkeys(str(name) for name in names if name))
+        or "Companie necunoscută"
+    )
+
+
+def _booking_url(itinerary):
+    """Accept only HTTPS links hosted by Kiwi, since the template uses |safe."""
+    raw_url = itinerary.get("bookingUrl") or ""
+    parsed = urlparse(raw_url)
+
+    if parsed.scheme == "https" and parsed.hostname in ("kiwi.com", "www.kiwi.com"):
+        return raw_url
+
+    return None
+
+
+def _format_itinerary(itinerary, currency):
+    outbound = itinerary.get("outbound") or {}
+    inbound = itinerary.get("inbound") or {}
+
+    if not outbound or not inbound:
+        return None
+
+    price = itinerary.get("price")
+
+    try:
+        price_label = f"{float(price):.2f} {currency}"
+    except (TypeError, ValueError):
+        price_label = itinerary.get("priceFormatted") or "indisponibil"
+
+    baggage = itinerary.get("baggage") or {}
+
+    baggage_label = (
+        f"obiect personal: {baggage.get('personalItem', '?')}, "
+        f"cabină: {baggage.get('cabinBag', '?')}, "
+        f"cală: {baggage.get('checkedBag', '?')}"
+    )
+
+    lines = [
+        f"✈ Dus: {escape(_airline_names(outbound))} "
+        f"({escape(str(outbound.get('from', '?')))} → "
+        f"{escape(str(outbound.get('to', '?')))})",
+        f"📤 Plecare: {_display_datetime(outbound.get('departureTime'))} "
+        f"→ Sosire: {_display_datetime(outbound.get('arrivalTime'))}",
+        f"🔁 Întors: {escape(_airline_names(inbound))} "
+        f"({escape(str(inbound.get('from', '?')))} → "
+        f"{escape(str(inbound.get('to', '?')))})",
+        f"📥 Plecare: {_display_datetime(inbound.get('departureTime'))} "
+        f"→ Sosire: {_display_datetime(inbound.get('arrivalTime'))}",
+        f"🛬 Escale: dus {escape(str(outbound.get('stops', '?')))}, "
+        f"întors {escape(str(inbound.get('stops', '?')))}",
+        f"🧳 Bagaje: {escape(baggage_label)}",
+        f"💶 Preț total: {escape(price_label)}",
     ]
 
-def search_all_flight_combinations(origin_city, origin_country, destination_city, destination_country, departure_date=None, return_date=None):
-    origin_airports = get_airports_from_city_and_country(origin_city, origin_country)
-    destination_airports = get_airports_from_city_and_country(destination_city, destination_country)
+    link = _booking_url(itinerary)
 
-    if not origin_airports:
-        print(f"❌ Niciun aeroport găsit pentru orașul de plecare: {origin_city}")
-        return [f"❌ Niciun aeroport găsit pentru {origin_city}"]
-    if not destination_airports:
-        print(f"❌ Niciun aeroport găsit pentru orașul de destinație: {destination_city}")
-        return [f"❌ Niciun aeroport găsit pentru {destination_city}"]
+    if link:
+        lines.append(
+            f'🔗 <a href="{escape(link, quote=True)}" target="_blank" '
+            'rel="noopener noreferrer">Rezervă aici</a>'
+        )
 
-    results = []  
+    return "\n".join(lines)
 
-    for origin_iata, origin_name, origin_country, origin_city in origin_airports:
-        for dest_iata, dest_name, dest_country, dest_city in destination_airports:
-            print(f"\n🔍 Caut zboruri din {origin_name} ({origin_iata}) către {dest_name} ({dest_iata})...")
 
-            querystring = {
-                "source": origin_iata,
-                "destination": dest_iata,
-                "currency": "usd",
-                "locale": "en",
-                "adults": "1",
-                "children": "0",
-                "infants": "0",
-                "handbags": "1",
-                "holdbags": "0",
-                "cabinClass": "ECONOMY",
-                "sortBy": "QUALITY",
-                "sortOrder": "DESCENDING",
-                "applyMixedClasses": "true",
-                "allowReturnFromDifferentCity": "false",
-                "allowChangeInboundDestination": "false",
-                "allowChangeInboundSource": "false",
-                "allowDifferentStationConnection": "false",
-                "enableSelfTransfer": "true",
-                "enableOvernightStopover": "false",
-                "enableTrueHiddenCity": "true",
-                "enableThrowAwayTicketing": "true",
-                "outbound": "SUNDAY,MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY,SATURDAY",
-                "transportTypes": "FLIGHT",
-                "contentProviders": "KIWI",
-                "outboundDepartureDateStart": departure_date + "T00:00:00" if departure_date else "",
-                "outboundDepartureDateEnd": departure_date + "T23:59:59" if departure_date else "",
-                "inboundDepartureDateStart": return_date + "T00:00:00" if return_date else "",
-                "inboundDepartureDateEnd": return_date + "T23:59:59" if return_date else ""
-            }
+async def _search_flights(origin_city, destination_city, departure_date, return_date):
+    arguments = {
+        "flyFrom": origin_city,
+        "flyTo": destination_city,
+        "departureDate": _kiwi_date(departure_date),
+        "returnDate": _kiwi_date(return_date),
+        "adults": 1,
+        "currency": "EUR",
+        "sort": "price",
+    }
 
-            headers = {
-                "x-rapidapi-key": RAPIDAPI_KEY,
-                "x-rapidapi-host": RAPIDAPI_HOST
-            }
+    async with streamable_http_client(KIWI_MCP_URL) as (read, write):
 
-            url = f"https://{RAPIDAPI_HOST}/round-trip"
-            try:
-                response = requests.get(url, headers=headers, params=querystring)
-                response.raise_for_status()
-                data = response.json()
-                itineraries = data.get("itineraries", [])
+        async with ClientSession(read, write) as session:
+            await session.initialize()
 
-                for idx, itinerary in enumerate(itineraries, 1):
-                    try:
-                        out_seg = itinerary["outbound"]["sectorSegments"][0]["segment"]
-                        in_seg = itinerary["inbound"]["sectorSegments"][0]["segment"]
+            response = await session.call_tool("search-flight", arguments=arguments)
 
-                        outbound_duration = itinerary["outbound"].get("duration", 0)
-                        inbound_duration = itinerary["inbound"].get("duration", 0)
+            if getattr(response, "is_error", False):
+                details = " ".join(
+                    getattr(item, "text", "") for item in response.content
+                )
 
-                        duration = outbound_duration + inbound_duration
+                raise RuntimeError(f"Kiwi MCP a returnat o eroare: {details[:500]}")
 
-                        airline = out_seg["carrier"]["name"]
-                        departure_raw = out_seg["source"]["localTime"]
-                        arrival_raw = out_seg["destination"]["localTime"]
-                        return_dep_raw = in_seg["source"]["localTime"]
-                        return_arr_raw = in_seg["destination"]["localTime"]
-                        
-                        fmt = "%Y-%m-%dT%H:%M:%S"
-                        
-                        departure = datetime.strptime(departure_raw, fmt).strftime("%H:%M %d-%m-%Y")
-                        arrival = datetime.strptime(arrival_raw, fmt).strftime("%H:%M %d-%m-%Y")
-                        return_dep = datetime.strptime(return_dep_raw, fmt).strftime("%H:%M %d-%m-%Y")
-                        return_arr = datetime.strptime(return_arr_raw, fmt).strftime("%H:%M %d-%m-%Y")
+            for item in response.content:
+                if getattr(item, "type", None) != "text":
+                    continue
 
-                        price = float(itinerary["price"]["amount"])
-                        currency = "USD"
-                        booking_url = itinerary["bookingOptions"]["edges"][0]["node"]["bookingUrl"]
-                        full_url = f"https://www.kiwi.com{booking_url}"
+                payload = json.loads(item.text)
 
-                        formatted = (
-                            f"✈ {airline}\n"
-                            f"📤 Plecare: {departure} → Sosire: {arrival}\n"
-                            f"🔁 Întoarcere: {return_dep} → Sosire: {return_arr}\n"
-                            f"💵 Preț: {price:.2f} {currency}\n"
-                            f'🔗 <a href="{full_url}" target="_blank">Rezervă aici</a>\n'
-                        )
+                if isinstance(payload, dict) and "itineraries" in payload:
+                    return payload
 
-                        results.append((duration, formatted))
+    raise ValueError("Răspunsul Kiwi MCP nu conține lista 'itineraries'.")
 
-                    except Exception as e:
-                        print(f"⚠ Eroare la parsarea itinerariului #{idx}: {e}")
 
-            except Exception as e:
-                print(f"⚠ Eroare la request: {e}")
+def search_all_flight_combinations(
+    origin_city,
+    origin_country,
+    destination_city,
+    destination_country,
+    departure_date=None,
+    return_date=None,
+):
+    """
+    Synchronous API preserved for vacation_planner.py.
 
-    if not results:
-        return ["🚫 Nu au fost găsite zboruri pentru această combinație."]
-    
-    results.sort(key=lambda x: x[0])
-    top_3 = [entry[1] for entry in results[:3]]
+    Kiwi MCP accepts city names directly and searches the airports serving
+    them, so origin_country and destination_country remain for compatibility.
+    """
 
-    return top_3
+    if not departure_date or not return_date:
+        return [
+            "🚫 Lipsesc datele de plecare sau întoarcere " "pentru căutarea zborurilor."
+        ]
 
+    try:
+        _kiwi_date(departure_date)
+        _kiwi_date(return_date)
+
+        if return_date < departure_date:
+            return ["🚫 Data întoarcerii trebuie să fie " "după data plecării."]
+
+        data = asyncio.run(
+            _search_flights(origin_city, destination_city, departure_date, return_date)
+        )
+
+    except Exception as exc:
+        logger.exception("Kiwi MCP flight search failed")
+
+        return [f"🚫 Căutarea zborurilor a eșuat: " f"{escape(str(exc))[:200]}"]
+
+    itineraries = data.get("itineraries") or []
+
+    if not isinstance(itineraries, list):
+        return ["🚫 Kiwi MCP a returnat un format " "neașteptat pentru zboruri."]
+
+    # Order by total price and ignore malformed entries.
+    def price_key(item):
+        try:
+            return float(item.get("price", float("inf")))
+        except (ValueError, TypeError, AttributeError):
+            return float("inf")
+
+    results = []
+
+    for itinerary in sorted(itineraries, key=price_key):
+        if not isinstance(itinerary, dict):
+            continue
+
+        formatted = _format_itinerary(itinerary, data.get("currency") or "EUR")
+
+        if formatted:
+            results.append(formatted)
+
+        if len(results) == 3:
+            break
+
+    return results or ["🚫 Nu au fost găsite zboruri pentru această combinație."]
