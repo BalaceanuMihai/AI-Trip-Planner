@@ -190,36 +190,3 @@ The application processes the conversation and displays the results at:
 `http://127.0.0.1:8000/chat/vacation_plan/`
 
 Use future travel dates when testing the application.
-
-## 📌 Limitations & Future Improvements
-
-This project is an educational prototype designed for local development and demonstration.
-
-Current limitations:
-
-- No user authentication or individual accounts.
-- Travel preferences are stored locally in JSON files.
-- Flight searches currently use one adult passenger.
-- Recommendations depend on third-party APIs and their availability.
-- Bookings and payments are completed on external websites.
-
-Potential improvements include user authentication, database-backed travel plans, saved itineraries, budget filtering, and production deployment.
-
-## 📚 Project Background
-
-AI Trip Planner was developed as a university project to explore the integration of **conversational AI and external travel APIs**.
-
-The project demonstrates backend development with Django, AI integration using OpenAI, API communication, structured data processing, and modular application design.
-
-The original implementation was subsequently updated to use newer Booking and Tripadvisor endpoints and the official Kiwi.com MCP integration.
-
-Additional resources:
-
-- [UML Architecture Diagram](./Diagrama%20UML.png)
-- [Original Project Demo](./demo-final.mkv)
-
-## ⚠️ Disclaimer
-
-AI Trip Planner is an educational application. Flight prices, accommodation availability, and attraction information may change.
-
-The application does not perform reservations or process payments. Users should verify all details with the relevant providers before booking.
